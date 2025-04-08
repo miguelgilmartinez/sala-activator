@@ -11,3 +11,4 @@ rwclave="carchuto"
 
 # En modo de prueba, simplemente devolvemos un resultado simulado
 echo "$swPlanta integer $vlan"
+2
