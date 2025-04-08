@@ -5,18 +5,29 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
+#        app_user_provider:
+#            entity:
+#                class: App\Entity\User
+#                property: email
+        my_ldap:
+            ldap:
+                service: Symfony\Component\Ldap\Ldap
+                base_dn: dc=juntadeandalucia,dc=es
+                search_dn: "cn=read-only-admin,dc=juntadeandalucia"
+                search_password: password
+                default_roles: ROLE_USER
+                uid_key: uid
+                extra_fields: ['email']
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: app_user_provider
+            provider: my_ldap
             form_login:
+                username_parameter: email
+                password_parameter: password
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
