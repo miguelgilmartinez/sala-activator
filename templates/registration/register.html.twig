@@ -36,21 +36,8 @@
                             {{ form_widget(registrationForm.plainPassword) }}
                             {{ form_errors(registrationForm.plainPassword) }}
                         </div>
-
-                        <div class="mb-3">
-                            <div class="form-check">
-                                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
-                                {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                {{ form_errors(registrationForm.agreeTerms) }}
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+                        <button type="submit" class="btn btn-primary w-100">Registrar usuario</button>
                     {{ form_end(registrationForm) }}
-
-                    <div class="mt-3 text-center">
-                        <p>¿Ya tienes una cuenta? <a href="{{ path('app_login') }}">Inicia sesión</a></p>
-                    </div>
                 </div>
             </div>
         </div>

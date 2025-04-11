@@ -11,33 +11,31 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class RegistrationController extends AbstractController
-{
+class RegistrationController extends AbstractController {
+
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
-    {
+    public function register(Request $req,
+            UserPasswordHasherInterface $userPassHasher,
+            EntityManagerInterface $entityMngr): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+        $form->handleRequest($req);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+                    $userPassHasher->hashPassword($user,
+                            $form->get('plainPassword')->getData()));
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $entityMngr->persist($user);
+            $entityMngr->flush();
 
             // Redirigir al login después del registro
             return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
+                    'registrationForm' => $form->createView(),
         ]);
     }
 }

@@ -31,15 +31,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'label' => 'Apellidos'
             ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'Debes aceptar nuestros términos.',
-                    ]),
-                ],
-                'label' => 'Acepto los términos y condiciones'
-            ])
+           
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller

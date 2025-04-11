@@ -26,6 +26,12 @@
                             <li class="nav-item">
                                 <span class="nav-link">Hola, {{ app.user.nombre }}</span>
                             </li>
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_register') }}">Nuevo Usuario</a>
+                                </li>
+                            {% endif %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('app_logout') }}">Cerrar sesión</a>
                             </li>
@@ -33,17 +39,14 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('app_login') }}">Iniciar sesión</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_register') }}">Registrarse</a>
-                            </li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
         </nav>
-        
+
         {% block body %}{% endblock %}
-        
+
         <footer class="container mt-5 py-3 text-center">
             <hr>
             <p>&copy; {{ "now"|date("Y") }} - Agencia Digital de Andalucía - Junta de Andalucía</p>
