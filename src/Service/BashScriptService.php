@@ -1,14 +1,13 @@
 <?php
-
 namespace App\Service;
-
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class BashScriptService {
-
     private string $scriptPath;
+    private string $readStatusPath;
+    
     // Mapeo de salas a parámetros (swPlanta y vlan)
     private array $salaParameters = [
         '1' => ['10.0.0.1', '101'],
@@ -18,12 +17,13 @@ class BashScriptService {
         '6' => ['10.0.0.6', '106'],
         'Palomar' => ['10.0.0.10', '110'],
     ];
-
+    
     public function __construct(ParameterBagInterface $params) {
-        // El script estará ubicado en la carpeta bin del proyecto
+        // Los scripts estarán ubicados en la carpeta bin del proyecto
         $this->scriptPath = $params->get('kernel.project_dir') . '/bin/fijar_estado_sala.sh';
+        $this->readStatusPath = $params->get('kernel.project_dir') . '/bin/leer_estado_salas.sh';
     }
-
+    
     /**
      * Ejecuta el script bash para activar/desactivar una sala
      */
@@ -31,62 +31,66 @@ class BashScriptService {
         if (!isset($this->salaParameters[$salaId])) {
             throw new \InvalidArgumentException("Sala no válida: $salaId");
         }
-
+        
         [$swPlanta, $vlan] = $this->salaParameters[$salaId];
-
         $process = new Process([$this->scriptPath, $swPlanta, $vlan]);
         $process->run();
-
+        
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
-
+        
         return [
             'sala' => $salaId,
             'output' => trim($process->getOutput()),
             'success' => true
         ];
     }
-
+    
     /**
      * Obtiene el estado actual de todas las salas
      */
     public function getSalasStatus(): array {
         $status = [];
-
+        $vlans = [];
+        
         // Inicializa todas las salas como desactivadas primero
         foreach (array_keys($this->salaParameters) as $salaId) {
             $status[$salaId] = false; // false = desactivada
+            $vlans[$salaId] = '0';    // VLAN 0 = desactivada
         }
-
+        
         // Para cada sala, consulta su estado mediante SNMP
-        foreach ($this->salaParameters as $salaId => [$switchIp, $puerto]) {
+        foreach ($this->salaParameters as $salaId => [$switchIp, $expectedVlan]) {
             // Ejecuta el script leer_estado_salas pasando la IP del switch
-            $command = '/bin/leer_estado_salas ' . escapeshellarg($switchIp);
-            exec($command, $output, $returnCode);
-
-            if ($returnCode !== 0) {
-                // Manejo de errores si el script falla
-                continue;
+            $process = new Process([$this->readStatusPath, $switchIp]);
+            $process->run();
+            
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
             }
-
+            
+            $output = explode("\n", $process->getOutput());
+            
             // Procesa la salida del script para encontrar el puerto específico
             foreach ($output as $line) {
-                // Busca la línea que contiene la información del puerto de esta sala
-                if (strpos($line, $puerto) !== false) {
-                    // El formato de salida es algo como "identificador_puerto vlan"
-                    $parts = preg_split('/\s+/', trim($line));
-                    if (count($parts) >= 2) {
-                        $vlan = (int) $parts[1];
-                        // Determina si la sala está activa según la VLAN
-                        // Suponiendo que VLAN > 0 indica que está activa
-                        $status[$salaId] = ($vlan > 0);
-                        // Encontramos el puerto, salimos del bucle
-                        break;
+                // El formato de salida es algo como "identificador_puerto vlan"
+                $parts = preg_split('/\s+/', trim($line));
+                if (count($parts) >= 2) {
+                    $currentVlan = trim($parts[1]);
+                    
+                    // Si coincide con la VLAN esperada para esta sala
+                    if ($currentVlan == $expectedVlan) {
+                        $status[$salaId] = true;
+                        $vlans[$salaId] = $currentVlan;
                     }
                 }
             }
         }
-        return $status;
+        
+        return [
+            'status' => $status,
+            'vlans' => $vlans
+        ];
     }
 }

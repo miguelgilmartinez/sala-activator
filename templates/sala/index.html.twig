@@ -1,4 +1,3 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Control de Salas{% endblock %}
@@ -42,6 +41,15 @@
             transform: scale(1.05);
         }
         
+        /* Estilos para los bordes según el valor de la segunda columna */
+        .vlan-101 { border: 4px solid #FF5733; }
+        .vlan-102 { border: 4px solid #33FF57; }
+        .vlan-103 { border: 4px solid #3357FF; }
+        .vlan-104 { border: 4px solid #F033FF; }
+        .vlan-106 { border: 4px solid #FF33A8; }
+        .vlan-110 { border: 4px solid #33FFF6; }
+        .vlan-0 { border: 4px solid #888888; }
+        
         #sala-1 { top: 100px; left: 100px; }
         #sala-2 { top: 100px; left: 300px; }
         #sala-3 { top: 100px; left: 500px; }
@@ -64,19 +72,35 @@
             overflow-y: auto;
             font-family: monospace;
         }
+        
+        .refresh-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+        }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container mt-4">
+        <div class="refresh-indicator" id="refresh-indicator">
+            Actualizando...
+        </div>
+        
+        <h1 class="text-center mb-4">Control de Salas</h1>
         
         <div class="sala-map-container" id="sala-map">
-            <div class="sala {% if salasStatus['1'] %}sala-active{% else %}sala-inactive{% endif %}" id="sala-1" data-sala-id="1">Sala 1</div>
-            <div class="sala {% if salasStatus['2'] %}sala-active{% else %}sala-inactive{% endif %}" id="sala-2" data-sala-id="2">Sala 2</div>
-            <div class="sala {% if salasStatus['3'] %}sala-active{% else %}sala-inactive{% endif %}" id="sala-3" data-sala-id="3">Sala 3</div>
-            <div class="sala {% if salasStatus['4'] %}sala-active{% else %}sala-inactive{% endif %}" id="sala-4" data-sala-id="4">Sala 4</div>
-            <div class="sala {% if salasStatus['6'] %}sala-active{% else %}sala-inactive{% endif %}" id="sala-6" data-sala-id="6">Sala 6</div>
-            <div class="sala {% if salasStatus['Palomar'] %}sala-active{% else %}sala-inactive{% endif %}" id="sala-palomar" data-sala-id="Palomar">Palomar</div>
+            <div class="sala {% if salasStatus['1'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['1']|default('0') }}" id="sala-1" data-sala-id="1">Sala 1</div>
+            <div class="sala {% if salasStatus['2'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['2']|default('0') }}" id="sala-2" data-sala-id="2">Sala 2</div>
+            <div class="sala {% if salasStatus['3'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['3']|default('0') }}" id="sala-3" data-sala-id="3">Sala 3</div>
+            <div class="sala {% if salasStatus['4'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['4']|default('0') }}" id="sala-4" data-sala-id="4">Sala 4</div>
+            <div class="sala {% if salasStatus['6'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['6']|default('0') }}" id="sala-6" data-sala-id="6">Sala 6</div>
+            <div class="sala {% if salasStatus['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['Palomar']|default('0') }}" id="sala-palomar" data-sala-id="Palomar">Palomar</div>
         </div>
         
         <div class="control-panel">
@@ -98,6 +122,16 @@
                 '{{ sala }}': {{ status ? 'true' : 'false' }},
                 {% endfor %}
             };
+            
+            // Datos de VLAN por sala
+            const salasVlans = {
+                {% for sala, vlan in salasVlans|default({}) %}
+                '{{ sala }}': '{{ vlan }}',
+                {% endfor %}
+            };
+            
+            const refreshIndicator = document.getElementById('refresh-indicator');
+            refreshIndicator.style.display = 'none';
             
             // Manejador para el clic en las salas
             document.querySelectorAll('.sala').forEach(salaElement => {
@@ -126,24 +160,58 @@
                         return;
                     }
                     
-                    // Invertir el estado local
-                    salasStatus[salaId] = !salasStatus[salaId];
+                    // Actualizar estado local y luego refrescar todos los estados
+                    updateSalasStatus();
                     
-                    // Actualizar la UI
-                    const salaElement = document.querySelector(`[data-sala-id="${salaId}"]`);
-                    if (salasStatus[salaId]) {
-                        salaElement.classList.remove('sala-inactive');
-                        salaElement.classList.add('sala-active');
-                        addLogMessage(`Sala ${salaId} activada: ${data.output}`);
-                    } else {
-                        salaElement.classList.remove('sala-active');
-                        salaElement.classList.add('sala-inactive');
-                        addLogMessage(`Sala ${salaId} desactivada: ${data.output}`);
-                    }
+                    addLogMessage(`Sala ${salaId} ${data.output}`);
                 })
                 .catch(error => {
                     addLogMessage(`Error en la comunicación: ${error.message}`, 'error');
                 });
+            }
+            
+            // Función para actualizar el estado de todas las salas
+            function updateSalasStatus() {
+                refreshIndicator.style.display = 'block';
+                
+                fetch('/get-salas-status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        addLogMessage(`Error: ${data.error}`, 'error');
+                        return;
+                    }
+                    
+                    // Actualizar estados
+                    for (const [salaId, status] of Object.entries(data)) {
+                        updateSalaUI(salaId, status);
+                    }
+                    
+                    refreshIndicator.style.display = 'none';
+                    addLogMessage('Estados de sala actualizados');
+                })
+                .catch(error => {
+                    refreshIndicator.style.display = 'none';
+                    addLogMessage(`Error al actualizar estados: ${error.message}`, 'error');
+                });
+            }
+            
+            // Actualizar el UI de una sala
+            function updateSalaUI(salaId, status) {
+                const salaElement = document.querySelector(`[data-sala-id="${salaId}"]`);
+                if (!salaElement) return;
+                
+                if (status) {
+                    salaElement.classList.remove('sala-inactive');
+                    salaElement.classList.add('sala-active');
+                } else {
+                    salaElement.classList.remove('sala-active');
+                    salaElement.classList.add('sala-inactive');
+                }
+                
+                // También actualizar el borde según VLAN
+                // Aquí necesitamos el valor de VLAN que vendría en una respuesta extendida
+                // Por ahora solo actualizamos el estado activo/inactivo
             }
             
             // Añadir mensaje al log
@@ -156,6 +224,13 @@
                 logElement.appendChild(messageElement);
                 logElement.scrollTop = logElement.scrollHeight;
             }
+            
+            // Configurar actualización periódica (cada minuto)
+            setInterval(updateSalasStatus, 60000);
+            
+            // Actualizar estados al cargar la página
+            addLogMessage('Inicializando control de salas...');
+            setTimeout(updateSalasStatus, 1000);
         });
     </script>
 {% endblock %}
