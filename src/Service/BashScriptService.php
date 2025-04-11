@@ -50,17 +50,43 @@ class BashScriptService {
 
     /**
      * Obtiene el estado actual de todas las salas
-     * En un entorno real, esto consultaría el estado actual mediante SNMP
      */
     public function getSalasStatus(): array {
-        // En un entorno real, esto consultaría el estado mediante SNMP
-        // Por ahora, simulamos que todas las salas están desactivadas inicialmente
         $status = [];
 
+        // Inicializa todas las salas como desactivadas primero
         foreach (array_keys($this->salaParameters) as $salaId) {
             $status[$salaId] = false; // false = desactivada
         }
 
+        // Para cada sala, consulta su estado mediante SNMP
+        foreach ($this->salaParameters as $salaId => [$switchIp, $puerto]) {
+            // Ejecuta el script leer_estado_salas pasando la IP del switch
+            $command = '/bin/leer_estado_salas ' . escapeshellarg($switchIp);
+            exec($command, $output, $returnCode);
+
+            if ($returnCode !== 0) {
+                // Manejo de errores si el script falla
+                continue;
+            }
+
+            // Procesa la salida del script para encontrar el puerto específico
+            foreach ($output as $line) {
+                // Busca la línea que contiene la información del puerto de esta sala
+                if (strpos($line, $puerto) !== false) {
+                    // El formato de salida es algo como "identificador_puerto vlan"
+                    $parts = preg_split('/\s+/', trim($line));
+                    if (count($parts) >= 2) {
+                        $vlan = (int) $parts[1];
+                        // Determina si la sala está activa según la VLAN
+                        // Suponiendo que VLAN > 0 indica que está activa
+                        $status[$salaId] = ($vlan > 0);
+                        // Encontramos el puerto, salimos del bucle
+                        break;
+                    }
+                }
+            }
+        }
         return $status;
     }
 }
