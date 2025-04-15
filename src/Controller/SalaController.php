@@ -22,7 +22,8 @@ class SalaController extends AbstractController {
         $salasStatus = $this->bashScriptService->getSalasStatus();
 
         return $this->render('sala/index.html.twig', [
-                    'salasStatus' => $salasStatus,
+                    'salasVlans' =>  $salasStatus['vlans'],
+                    'salasStatus' => $salasStatus['status'],
         ]);
     }
 
