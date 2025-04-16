@@ -5,65 +5,128 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        .sala .departamento-select {
+            margin-top: 5px; /* Espaciado entre el texto de la sala y el select */
+            width: 80%; /* Ajusta el ancho del select para que no ocupe todo el espacio */
+            padding: 5px; /* Agrega un poco de relleno interior */
+            border-radius: 3px; /* Bordes redondeados */
+            border: 1px solid #ccc; /* Borde suave */
+            background-color: rgba(255, 255, 255, 0.7); /* Fondo semitransparente */
+            color: #333; /* Color de texto oscuro */
+            text-align: center; /* Centra el texto dentro del select */
+            appearance: none; /* Quita el estilo predeterminado del navegador */
+            -webkit-appearance: none; /* Para navegadores basados en WebKit */
+            -moz-appearance: none; /* Para Firefox */
+            transition: all 0.3s ease; /* Transición suave para cambios de estado */
+            cursor: pointer;
+        }
+
+        /* Al centrar el contenido del select */
+        .sala .departamento-select option {
+            cursor: pointer;
+            text-align: center; /* Centra el texto de las opciones */
+        }
+
+        /* Cuando se enfoca el select */
+        .sala .departamento-select:focus {
+            cursor: pointer;
+            outline: none; /* Elimina el contorno al hacer clic */
+            border-color: #888; /* Cambia el color del borde al enfocar */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Agrega una sombra ligera */
+        }
+
         .sala-map-container {
             position: relative;
             width: 800px;
-            height: 600px;
+            height: 500px;
             background-size: contain;
             margin: 0 auto;
             border: 1px solid #ccc;
         }
-        
+
         .sala {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 150px;
+            height: 150px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             font-weight: bold;
-            cursor: pointer;
+            flex-direction: column;
             transition: all 0.3s ease;
         }
-        
+
         .sala-inactive {
             background-color: #aaa;
             color: #333;
         }
-        
+
         .sala-active {
             background-color: #5cb85c;
             color: white;
         }
-        
+
         .sala:hover {
             transform: scale(1.05);
         }
-        
+
         /* Estilos para los bordes según el valor de la segunda columna */
-        .vlan-101 { border: 4px solid #FF5733; }
-        .vlan-102 { border: 4px solid #33FF57; }
-        .vlan-103 { border: 4px solid #3357FF; }
-        .vlan-104 { border: 4px solid #F033FF; }
-        .vlan-106 { border: 4px solid #FF33A8; }
-        .vlan-110 { border: 4px solid #33FFF6; }
-        .vlan-0 { border: 4px solid #888888; }
-        
-        #sala-1 { top: 100px; left: 100px; }
-        #sala-2 { top: 100px; left: 300px; }
-        #sala-3 { top: 100px; left: 500px; }
-        #sala-4 { top: 300px; left: 100px; }
-        #sala-6 { top: 300px; left: 300px; }
-        #sala-palomar { top: 300px; left: 500px; }
-        
+        .vlan-101 {
+            border: 4px solid #FF5733;
+        }
+        .vlan-102 {
+            border: 4px solid #33FF57;
+        }
+        .vlan-103 {
+            border: 4px solid #3357FF;
+        }
+        .vlan-104 {
+            border: 4px solid #F033FF;
+        }
+        .vlan-106 {
+            border: 4px solid #FF33A8;
+        }
+        .vlan-110 {
+            border: 4px solid #33FFF6;
+        }
+        .vlan-0 {
+            border: 4px solid #888888;
+        }
+
+        #sala-1 {
+            top: 50px;
+            left: 100px;
+        }
+        #sala-2 {
+            top: 50px;
+            left: 300px;
+        }
+        #sala-3 {
+            top: 50px;
+            left: 500px;
+        }
+        #sala-4 {
+            top: 250px;
+            left: 100px;
+        }
+        #sala-6 {
+            top: 250px;
+            left: 300px;
+        }
+        #sala-palomar {
+            top: 250px;
+            left: 500px;
+        }
+
         .control-panel {
             margin-top: 20px;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        
+
         .status-log {
             margin-top: 20px;
             padding: 10px;
@@ -72,7 +135,7 @@
             overflow-y: auto;
             font-family: monospace;
         }
-        
+
         .refresh-indicator {
             position: fixed;
             top: 10px;
@@ -83,6 +146,19 @@
             border: 1px solid #ddd;
             font-size: 12px;
         }
+
+        .sala .departamento-select {
+            margin-top: 5px;
+            padding: 5px;
+            width: 100%;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+
+        .sala .departamento-select:focus {
+            outline: none;
+            border-color: #888;
+        }
     </style>
 {% endblock %}
 
@@ -91,18 +167,33 @@
         <div class="refresh-indicator" id="refresh-indicator">
             Actualizando...
         </div>
-        
+
         <h1 class="text-center mb-4">Control de Salas</h1>
-        
+
         <div class="sala-map-container" id="sala-map">
-            <div class="sala {% if salasStatus['1'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['1']|default('0') }}" id="sala-1" data-sala-id="1">Sala 1</div>
-            <div class="sala {% if salasStatus['2'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['2']|default('0') }}" id="sala-2" data-sala-id="2">Sala 2</div>
-            <div class="sala {% if salasStatus['3'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['3']|default('0') }}" id="sala-3" data-sala-id="3">Sala 3</div>
-            <div class="sala {% if salasStatus['4'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['4']|default('0') }}" id="sala-4" data-sala-id="4">Sala 4</div>
-            <div class="sala {% if salasStatus['6'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['6']|default('0') }}" id="sala-6" data-sala-id="6">Sala 6</div>
-            <div class="sala {% if salasStatus['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['Palomar']|default('0') }}" id="sala-palomar" data-sala-id="Palomar">Palomar</div>
+            <div class="sala {% if salasStatus['1'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['1']|default('0') }}" id="sala-1" data-sala-id="1">
+                <div class="sala-nombre">Sala 1</div>
+                <select class="departamento-select">
+                    <option value="192.168.66.19 30 33 34">Fomento</option>
+                    <option value="192.168.66.20 31 34 35">EIM</option>
+                    <option value="192.168.66.21 32 35 36">Hacienda</option>
+                </select>
+            </div>
+            <div class="sala {% if salasStatus['2'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['2']|default('0') }}" id="sala-2" data-sala-id="2">
+                <div class="sala-nombre">Sala 2</div>
+            </div>
+            <div class="sala {% if salasStatus['3'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['3']|default('0') }}" id="sala-3" data-sala-id="3">
+                <div class="sala-nombre">Sala 3</div>
+            </div>
+            <div class="sala {% if salasStatus['4'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['4']|default('0') }}" id="sala-4" data-sala-id="4">
+                <div class="sala-nombre">Sala 4</div></div>
+            <div class="sala {% if salasStatus['6'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['6']|default('0') }}" id="sala-6" data-sala-id="6">
+                <div class="sala-nombre">Sala 6</div></div>
+            <div class="sala {% if salasStatus['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['Palomar']|default('0') }}" id="sala-palomar" data-sala-id="Palomar">
+                <div class="sala-nombre">Sala<br/> Planta 7</div>
+            </div>
         </div>
-        
+
         <div class="control-panel">
             <h3>Registro de Operaciones</h3>
             <div class="status-log" id="status-log">
@@ -115,122 +206,113 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Estado local de las salas
             const salasStatus = {
-                {% for sala, status in salasStatus %}
-                '{{ sala }}': {{ status ? 'true' : 'false' }},
-                {% endfor %}
-            };
-            
-            // Datos de VLAN por sala
-            const salasVlans = {
-                {% for sala, vlan in salasVlans|default({}) %}
-                '{{ sala }}': '{{ vlan }}',
-                {% endfor %}
-            };
-            
-            const refreshIndicator = document.getElementById('refresh-indicator');
-            refreshIndicator.style.display = 'none';
-            
-            // Manejador para el clic en las salas
-            document.querySelectorAll('.sala').forEach(salaElement => {
-                salaElement.addEventListener('click', function() {
-                    const salaId = this.dataset.salaId;
-                    toggleSala(salaId);
+        {% for sala, status in salasStatus %}
+                    '{{ sala }}':{{ status ? 'true' : 'false' }},
+        {% endfor %}
+                };
+                // Datos de VLAN por sala
+                const salasVlans = {
+        {% for sala, vlan in salasVlans|default({}) %}
+                    '{{ sala }}': '{{ vlan }}',
+        {% endfor %}
+                };
+
+                const refreshIndicator = document.getElementById('refresh-indicator');
+                refreshIndicator.style.display = 'none';
+
+                // Manejador para el clic en las salas
+                document.querySelectorAll('.departamento-select').forEach(salaElement => {
+                    salaElement.addEventListener('change', function () {
+                        const salaId = this.dataset.salaId;
+                        toggleSala(salaId);
+                    });
                 });
-            });
-            
-            // Función para activar/desactivar una sala
-            function toggleSala(salaId) {
-                // Mostrar estado de carga
-                addLogMessage(`Procesando sala ${salaId}...`);
-                
-                fetch('/toggle-sala', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ sala: salaId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        addLogMessage(`Error: ${data.error}`, 'error');
-                        return;
-                    }
-                    
-                    // Actualizar estado local y luego refrescar todos los estados
-                    updateSalasStatus();
-                    
-                    addLogMessage(`Sala ${salaId} ${data.output}`);
-                })
-                .catch(error => {
-                    addLogMessage(`Error en la comunicación: ${error.message}`, 'error');
-                });
-            }
-            
-            // Función para actualizar el estado de todas las salas
-            function updateSalasStatus() {
-                refreshIndicator.style.display = 'block';
-                
-                fetch('/get-salas-status')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        addLogMessage(`Error: ${data.error}`, 'error');
-                        return;
-                    }
-                    
-                    // Actualizar estados
-                    for (const [salaId, status] of Object.entries(data)) {
-                        updateSalaUI(salaId, status);
-                    }
-                    
-                    refreshIndicator.style.display = 'none';
-                    addLogMessage('Estados de sala actualizados');
-                })
-                .catch(error => {
-                    refreshIndicator.style.display = 'none';
-                    addLogMessage(`Error al actualizar estados: ${error.message}`, 'error');
-                });
-            }
-            
-            // Actualizar el UI de una sala
-            function updateSalaUI(salaId, status) {
-                const salaElement = document.querySelector(`[data-sala-id="${salaId}"]`);
-                if (!salaElement) return;
-                
-                if (status) {
-                    salaElement.classList.remove('sala-inactive');
-                    salaElement.classList.add('sala-active');
-                } else {
-                    salaElement.classList.remove('sala-active');
-                    salaElement.classList.add('sala-inactive');
+
+                // Función para activar/desactivar una sala
+                function toggleSala(salaId) {
+                    // Obtener el valor seleccionado del desplegable
+                    const selectedValue = this.querySelector('.departamento-select').value;
+
+                    addLogMessage(`Procesando sala ${salaId}...`);
+
+                    fetch('/toggle-sala', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            sala: salaId,
+                            departamento: selectedValue // Valor del desplegable
+                        })
+                    })
+                    // ... (resto del código)
                 }
-                
-                // También actualizar el borde según VLAN
-                // Aquí necesitamos el valor de VLAN que vendría en una respuesta extendida
-                // Por ahora solo actualizamos el estado activo/inactivo
-            }
-            
-            // Añadir mensaje al log
-            function addLogMessage(message, type = 'info') {
-                const logElement = document.getElementById('status-log');
-                const timestamp = new Date().toLocaleTimeString();
-                const messageElement = document.createElement('div');
-                messageElement.className = `log-entry log-${type}`;
-                messageElement.textContent = `[${timestamp}] ${message}`;
-                logElement.appendChild(messageElement);
-                logElement.scrollTop = logElement.scrollHeight;
-            }
-            
-            // Configurar actualización periódica (cada minuto)
-            setInterval(updateSalasStatus, 60000);
-            
-            // Actualizar estados al cargar la página
-            addLogMessage('Inicializando control de salas...');
-            setTimeout(updateSalasStatus, 1000);
-        });
+
+                // Función para actualizar el estado de todas las salas
+                function updateSalasStatus() {
+                    refreshIndicator.style.display = 'block';
+
+                    fetch('/get-salas-status')
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.error) {
+                                    addLogMessage(`Error: ${data.error}`, 'error');
+                                    return;
+                                }
+
+                                // Actualizar estados
+                                for (const [salaId, status] of Object.entries(data)) {
+                                    updateSalaUI(salaId, status);
+                                }
+
+                                refreshIndicator.style.display = 'none';
+                                addLogMessage('Estados de sala actualizados');
+                            })
+                            .catch(error => {
+                                refreshIndicator.style.display = 'none';
+                                addLogMessage(`Error al actualizar estados: ${error.message}`, 'error');
+                            });
+                }
+
+                // Actualizar el UI de una sala
+                function updateSalaUI(salaId, status) {
+                    const salaElement = document.querySelector(`[data-sala-id="${salaId}"]`);
+                    if (!salaElement)
+                        return;
+
+                    if (status) {
+                        salaElement.classList.remove('sala-inactive');
+                        salaElement.classList.add('sala-active');
+                    } else {
+                        salaElement.classList.remove('sala-active');
+                        salaElement.classList.add('sala-inactive');
+                    }
+
+                    // También actualizar el borde según VLAN
+                    // Aquí necesitamos el valor de VLAN que vendría en una respuesta extendida
+                    // Por ahora solo actualizamos el estado activo/inactivo
+                }
+
+                // Añadir mensaje al log
+                function addLogMessage(message, type = 'info') {
+                    const logElement = document.getElementById('status-log');
+                    const timestamp = new Date().toLocaleTimeString();
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `log-entry log-${type}`;
+                    messageElement.textContent = `[${timestamp}] ${message}`;
+                    logElement.appendChild(messageElement);
+                    logElement.scrollTop = logElement.scrollHeight;
+                }
+
+                // Configurar actualización periódica (cada minuto)
+                setInterval(updateSalasStatus, 60000);
+
+                // Actualizar estados al cargar la página
+                addLogMessage('Inicializando control de salas...');
+                setTimeout(updateSalasStatus, 1000);
+            });
     </script>
 {% endblock %}
