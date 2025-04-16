@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Sala Planta 7 Fomento
+Exec=/usr/local/bin/cambiaVlan.sh 192.168.66.17 30 06 07 08 09 10 11 12 13 14 15 16 17
+Comment=Asigna la sala de la planta 7 a la vlan de Fomento
+Terminal=true
+PrefersNonDefaultGPU=false
+Icon=network-wired-symbolic
+Type=Application
+Name[es_ES]=Sala_Planta_7_Fomento

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Sala 6 Fomento
+Exec=/usr/local/bin/cambiaVlan.sh 192.168.66.19 30 42 16
+Comment=Asigna la sala 6 a la vlan de Fomento
+Terminal=true
+PrefersNonDefaultGPU=false
+Icon=network-wired-symbolic
+Type=Application
+Name[es_ES]=Sala_6_Fomento

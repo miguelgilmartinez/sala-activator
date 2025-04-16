@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Sala 3 INEMI
+Exec=/usr/local/bin/cambiaVlan.sh 192.168.66.19 50 37 38
+Comment=Asigna la sala 3 a la vlan de INEMI
+Terminal=true
+PrefersNonDefaultGPU=false
+Icon=network-wired-symbolic
+Type=Application
+Name[es_ES]=Sala_3_INEMI

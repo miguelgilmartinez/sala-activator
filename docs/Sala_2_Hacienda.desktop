@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Sala 2 Hacienda
+Exec=/usr/local/bin/cambiaVlan.sh 192.168.66.19 20  35 36
+Comment=Asigna la sala 2 a la vlan de Hacienda
+Terminal=true
+PrefersNonDefaultGPU=false
+Icon=network-wired-symbolic
+Type=Application
+Name[es_ES]=Sala_2_Hacienda
