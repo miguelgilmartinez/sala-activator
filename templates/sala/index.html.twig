@@ -213,7 +213,7 @@
             <div class="sala {% if salasStatus['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['Palomar']|default('0') }}" id="sala-palomar" data-sala-id="Palomar">
                 <div class="sala-nombre">Sala<br/> Planta 7</div>
                 <select class="departamento-select">
-                    <option value="{{ switchesIP[1] }} 30 33 34">Fomento</option>
+                    <option value="{{ switchesIP[1] }} 30 33 34">Fomento</option >
                     <option value="{{ switchesIP[1] }} 31 34 35">EIM</option>
                     <option value="{{ switchesIP[1] }} 32 35 36">Hacienda</option>
                 </select>
