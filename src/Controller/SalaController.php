@@ -8,21 +8,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\SwitchSalasRepository;
 
 class SalaController extends AbstractController {
 
     private BashScriptService $bashScriptService;
 
-    public function __construct(BashScriptService $bashScriptService) {
+    public function __construct(BashScriptService $bashScriptService,
+            private SwitchSalasRepository $ssRepo) {
         $this->bashScriptService = $bashScriptService;
     }
 
     #[Route('/', name: 'app_sala_index')]
     public function index(): Response {
         $salasStatus = $this->bashScriptService->getSalasStatus();
-
+        $switchesIP = array_map(function (\App\Entity\SwitchSalas $switch) {
+            return $switch->getIp();
+        }, $this->ssRepo->findAll());
         return $this->render('sala/index.html.twig', [
-                    'salasVlans' =>  $salasStatus['vlans'],
+                    'switchesIP' => $switchesIP,
+                    'salasVlans' => $salasStatus['vlans'],
                     'salasStatus' => $salasStatus['status'],
         ]);
     }
