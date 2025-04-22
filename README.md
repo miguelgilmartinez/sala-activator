@@ -16,7 +16,11 @@ bin/console doctrine:migrations:migrate
 bin/console app:create-admin admin@juntadeandalucia.es 123123 "Admin" "Admin"
 ```
 
+Creamos los dos switches iniciales
 
+```sql
+INSERT INTO switch_salas (nombre, ip) VALUES ('Principal', '192.168.66.19'), ('Palomar', '192.168.66.30');
+```
 
 
 
