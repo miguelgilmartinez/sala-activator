@@ -19,7 +19,7 @@ final class Version20250421065112 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql("CREATE TABLE switch_salas (
+        $this->addSql("CREATE TABLE IF NOT EXISTS switch_salas (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     ip VARCHAR(15) NOT NULL,

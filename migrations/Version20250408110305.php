@@ -21,10 +21,10 @@ final class Version20250408110305 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1
+            CREATE SEQUENCE IF NOT EXISTS "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE "user" (id INT NOT NULL, email VARCHAR(180) NOT NULL, password VARCHAR(255) NOT NULL, nombre VARCHAR(255) NOT NULL, apellidos VARCHAR(255) NOT NULL, PRIMARY KEY(id))
+            CREATE TABLE "user" IF NOT EXISTS (id INT NOT NULL, email VARCHAR(180) NOT NULL, password VARCHAR(255) NOT NULL, nombre VARCHAR(255) NOT NULL, apellidos VARCHAR(255) NOT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
             CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)
