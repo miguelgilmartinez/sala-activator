@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Form\RegistrationFormType;
 
 #[Route('/admin/user')]
 #[IsGranted('ROLE_ADMIN')]
@@ -24,35 +25,34 @@ class UserController extends AbstractController {
         ]);
     }
 
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): Response {
+    #[Route('/register', name: 'app_register')]
+    public function register(Request $req,
+            UserPasswordHasherInterface $userPassHasher,
+            EntityManagerInterface $entityMngr): Response {
         $user = new User();
         try {
-            $form = $this->createForm(UserType::class, $user);
-            $form->handleRequest($request);
-
+            $form = $this->createForm(RegistrationFormType::class, $user);
+            $form->handleRequest($req);
             if ($form->isSubmitted() && $form->isValid()) {
-                // Encriptar la contraseña
-                $hashedPassword = $passwordHasher->hashPassword(
-                        $user,
-                        $form->get('plainPassword')->getData()
-                );
-                $user->setPassword($hashedPassword);
-
-                $userRepository->save($user, true);
-
-                $this->addFlash('success', 'Usuario creado correctamente.');
-                return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+                // encode the plain password
+                $user->setPassword(
+                        $userPassHasher->hashPassword($user,
+                                $form->get('plainPassword')->getData()));
+                $entityMngr->persist($user);
+                $entityMngr->flush();
+                $this->addFlash("success", "Usuario creado");
+                // Redirigir al login después del registro
+                return $this->redirectToRoute('app_user_index');
             }
-
-            return $this->render('user/new.html.twig', [
-                        'user' => $user,
-                        'form' => $form,
+            return $this->render('registration/register.html.twig', [
+                        'registrationForm' => $form->createView(),
             ]);
-        } catch (\Exception $ex) {
-            return $this->json(
-                            ['error' => 'El usuario ya existe en el sistema'],
-                            Response::HTTP_CONFLICT);
+        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+            $this->addFlash("danger", "Usuario ya existe");
+            return $this->redirectToRoute('app_register');
+            //     return  new Response(); //$this->json(['error' => 'El usuario ya existe en el sistema'],
+//                            Response::HTTP_CONFLICT
+//                    );
         }
     }
 
@@ -64,32 +64,20 @@ class UserController extends AbstractController {
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response {
-        $form = $this->createForm(UserType::class, $user, [
-            'is_edit' => true,
-        ]);
+    public function edit(Request $request, User $u, EntityManagerInterface $em,
+            UserPasswordHasherInterface $passwordHasher): Response {
+        $form = $this->createForm(UserType::class, $u, ['is_edit' => true]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            // Si se proporcionó una nueva contraseña, encriptarla
-            if ($plainPassword = $form->get('plainPassword')->getData()) {
-                $hashedPassword = $passwordHasher->hashPassword(
-                        $user,
-                        $plainPassword
-                );
-                $user->setPassword($hashedPassword);
+            if ($plainPass = $form->get('plainPassword')->getData()) {
+                $hashedPassword = $passwordHasher->hashPassword($u, $plainPass);
+                $u->setPassword($hashedPassword);
             }
-
-            $entityManager->flush();
-
+            $em->flush();
             $this->addFlash('success', 'Usuario actualizado correctamente.');
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->render('user/edit.html.twig', [
-                    'user' => $user,
-                    'form' => $form,
-        ]);
+        return $this->render('user/edit.html.twig', ['user' => $u, 'form' => $form]);
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
@@ -100,10 +88,8 @@ class UserController extends AbstractController {
                 $this->addFlash('error', 'No puedes eliminar tu propio usuario.');
                 return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
             }
-
             $entityManager->remove($user);
             $entityManager->flush();
-
             $this->addFlash('success', 'Usuario eliminado correctamente.');
         }
 

@@ -14,6 +14,14 @@
         {% endblock %}
     </head>
     <body>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand" href="{{ path('app_sala_index') }}">Control de Salas</a>
@@ -29,7 +37,7 @@
 
                             {% if is_granted('ROLE_ADMIN') %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('app_register') }}">Nuevo Usuario</a>
+                                    <a class="nav-link" href="{{ path('app_user_index') }}">Usuarios</a>
                                 </li>
                             {% endif %}
                             <li class="nav-item">

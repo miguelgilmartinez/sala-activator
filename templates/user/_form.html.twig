@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.email) }}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.plainPassword.first) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.plainPassword.second) }}
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Roles</label>
+        <div class="mt-2">
+            {{ form_widget(form.roles) }}
+        </div>
+    </div>
+    
+    <div class="mb-3 form-check">
+        {{ form_widget(form.active) }}
+        {{ form_label(form.active) }}
+    </div>
+    
+    <button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+{{ form_end(form) }}

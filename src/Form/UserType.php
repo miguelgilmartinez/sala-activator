@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form;
 
 use App\Entity\User;
@@ -14,35 +15,33 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class UserType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
+class UserType extends AbstractType {
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'Nombre',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('roles', ChoiceType::class, [
-                'label' => 'Roles',
-                'choices' => [
-                    'Usuario' => 'ROLE_USER',
-                    'Administrador' => 'ROLE_ADMIN',
-                ],
-                'multiple' => true,
-                'expanded' => true,
-                'attr' => ['class' => 'form-check'],
-            ])
-            ->add('active', CheckboxType::class, [
-                'label' => 'Activo',
-                'required' => false,
-                'attr' => ['class' => 'form-check-input'],
-                'label_attr' => ['class' => 'form-check-label'],
-            ]);
+                ->add('nombre', TextType::class, [
+                    'label' => 'Nombre',
+                    'attr' => ['class' => 'form-control'],
+                ])
+                ->add('email', EmailType::class, [
+                    'label' => 'Email',
+                    'attr' => ['class' => 'form-control'],
+                ])
+                ->add('apellidos', TextType::class, [
+                    'label' => 'Apellidos',
+                    'attr' => ['class' => 'form-control'],
+                ])
+                
+                ->add('roles', ChoiceType::class, [
+                    'label' => 'Roles',
+                    'choices' => [
+                        'Usuario' => 'ROLE_USER',
+                        'Administrador' => 'ROLE_ADMIN',
+                    ],
+                    'multiple' => true,
+                    'expanded' => true,
+                    'attr' => ['class' => 'form-check'],
+        ]);
 
         // La contraseña es requerida para nuevos usuarios, pero opcional para edición
         $passwordConstraints = [
@@ -50,15 +49,15 @@ class UserType extends AbstractType
                 'min' => 6,
                 'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres',
                 'max' => 4096,
-            ]),
+                    ]),
         ];
-        
+
         if (!$options['is_edit']) {
             $passwordConstraints[] = new NotBlank([
                 'message' => 'Por favor ingresa una contraseña',
             ]);
         }
-        
+
         $builder->add('plainPassword', RepeatedType::class, [
             'type' => PasswordType::class,
             'mapped' => false,
@@ -77,8 +76,7 @@ class UserType extends AbstractType
         ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
+    public function configureOptions(OptionsResolver $resolver): void {
         $resolver->setDefaults([
             'data_class' => User::class,
             'is_edit' => false,
