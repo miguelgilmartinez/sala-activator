@@ -1,0 +1,131 @@
+
+{# templates/user/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Usuario{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Crear Nuevo Usuario</h1>
+        
+        {{ include('user/_form.html.twig') }}
+
+        <a href="{{ path('app_user_index') }}" class="btn btn-secondary mt-3">Volver a la lista</a>
+    </div>
+{% endblock %}
+
+{# templates/user/edit.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Usuario{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Editar Usuario</h1>
+        
+        {{ include('user/_form.html.twig') }}
+
+        <div class="d-flex justify-content-between mt-3">
+            <a href="{{ path('app_user_index') }}" class="btn btn-secondary">Volver a la lista</a>
+            
+            {% if user != app.user %}
+                <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('¿Estás seguro que deseas eliminar este usuario?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                    <button class="btn btn-danger">Eliminar</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{# templates/user/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalles del Usuario{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Detalles del Usuario</h1>
+
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>ID</th>
+                    <td>{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <td>{{ user.name }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>Roles</th>
+                    <td>
+                        {% for role in user.roles %}
+                            {% if role == 'ROLE_ADMIN' %}
+                                <span class="badge bg-danger">Administrador</span>
+                            {% elseif role == 'ROLE_USER' %}
+                                <span class="badge bg-info">Usuario</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ role }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td>
+                        {% if user.active %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-warning">Inactivo</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('app_user_index') }}" class="btn btn-secondary">Volver a la lista</a>
+            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-primary">Editar</a>
+        </div>
+    </div>
+{% endblock %}
+
+{# templates/user/_form.html.twig #}
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.email) }}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.plainPassword.first) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.plainPassword.second) }}
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Roles</label>
+        <div class="mt-2">
+            {{ form_widget(form.roles) }}
+        </div>
+    </div>
+    
+    <div class="mb-3 form-check">
+        {{ form_widget(form.active) }}
+        {{ form_label(form.active) }}
+    </div>
+    
+    <button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+{{ form_end(form) }}

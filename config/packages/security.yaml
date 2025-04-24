@@ -12,7 +12,7 @@ security:
  
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
-        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+       # ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
         
     firewalls:
         dev:
@@ -31,9 +31,13 @@ security:
             logout:
                 path: app_logout
                 target: app_login
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path: /
 
     # Control de acceso simplificado
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/register, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/, roles: ROLE_USER }
