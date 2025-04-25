@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\SwitchSalasRepository;
+use App\Entity\SwitchSalas;
 
 class SalaController extends AbstractController {
 
@@ -22,14 +23,10 @@ class SalaController extends AbstractController {
     #[Route('/', name: 'app_sala_index')]
     public function index(): Response {
         $salasStatus = $this->bashScriptService->getSalasStatus();
-        $switchesIP = array_map(function (\App\Entity\SwitchSalas $switch) {
-            return $switch->getIp();
-        }, $this->ssRepo->findAll());
-        return $this->render('sala/index.html.twig', [
-                    'switchesIP' => $switchesIP,
-                    'salasVlans' => $salasStatus['vlans'],
-                    'salasStatus' => $salasStatus['status'],
-        ]);
+//        $$salasStatus = array_map(function (SwitchSalas $sala) {
+//            return $sala->toArray();
+//        }, $this->ssRepo->findAll());
+        return $this->render('sala/index.html.twig', $salasStatus);
     }
 
     #[Route('/toggle-sala', name: 'app_sala_toggle', methods: ['POST'])]
@@ -54,7 +51,7 @@ class SalaController extends AbstractController {
     #[Route('/get-salas-status', name: 'app_sala_status', methods: ['GET'])]
     public function getSalasStatus(): JsonResponse {
         try {
-            $salasStatus = $this->bashScriptService->getSalasStatus();
+            //$salasStatus = $this->bashScriptService->getSalasStatus();
             return new JsonResponse($salasStatus);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()],

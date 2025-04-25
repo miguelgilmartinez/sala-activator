@@ -65,7 +65,15 @@ class SwitchSalas {
 
     public function setPuertos(string $puertos): static {
         $this->puertos = $puertos;
-
         return $this;
+    }
+
+    public function toArray(): array {
+        $salas['id'] = $this->id;
+        $salas['ip'] = $this->ip;
+        $salas['nombre'] = $this->nombre;
+        $salas['puerto'] = $this->puertos;
+        $salas['vlan'] = $this->vlan;
+        return $salas;
     }
 }
