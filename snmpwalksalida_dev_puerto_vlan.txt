@@ -1,3 +1,5 @@
+Buscar el primer puerto que corresponde a la sala: esa será su vlan
+
 01   1
 02   1
 03   1
