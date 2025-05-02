@@ -13,7 +13,7 @@ class BashScriptService {
     private string $leerEstadoSala;
     private array $salaParameters = [];
 
-    public function __construct(ParameterBagInterface $params, SwitchSalasRepository $ssRepo) {
+    public function __construct(ParameterBagInterface $params, private SwitchSalasRepository $ssRepo) {
         // Los scripts estarán ubicados en la carpeta bin del proyecto
         $this->fijarEstadoSala = $params->get('kernel.project_dir') . '/bin/fijar_estado_sala.sh';
         $this->leerEstadoSala = $params->get('kernel.project_dir') . '/bin/leer_estado_salas.sh';
@@ -45,6 +45,32 @@ class BashScriptService {
         ];
     }
 
+    private function getSwitchesStatus(): array {
+        // Ejecuta el script leer_estado_salas pasando la IP del switch
+        $ips = $this->ssRepo->getIPsSwitches();
+        foreach ($ips as $ip) {
+            $process = new Process([$this->leerEstadoSala, $ip['ip']]);
+            $process->run();
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+            $output = explode("\n", $process->getOutput());
+            foreach ($output as $line) {
+                $parts = preg_split('/\s+/', trim($line));
+                if (count($parts) >= 2) {
+                    $currentVlan = trim($parts[1]);
+                    // Si coincide con la VLAN esperada para esta sala
+                    if ($currentVlan == $expectedVlan) {
+                        $status[$salaId] = true;
+                        $vlans[$salaId] = $currentVlan;
+                    }
+                }
+            }
+        }
+
+        return [];
+    }
+
     /**
      * Obtiene el estado actual de todas las salas
      */
@@ -58,30 +84,10 @@ class BashScriptService {
             $status[$salaId] = false; // false = desactivada
             $vlans[$salaId] = '0';    // VLAN 0 = desactivada
         }
+        $this->salaParameters = $this->getSwitchesStatus();
 
-        // Para cada sala, consulta su estado mediante SNMP
         foreach ($this->salaParameters as $sala) {
-            // Ejecuta el script leer_estado_salas pasando la IP del switch
-            $process = new Process([$this->leerEstadoSala, $sala['ip']]);
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-            $output = explode("\n", $process->getOutput());
-            // Procesa la salida del script para encontrar el puerto específico
-            foreach ($output as $line) {
-                // El formato de salida es algo como "identificador_puerto vlan"
-                $parts = preg_split('/\s+/', trim($line));
-                if (count($parts) >= 2) {
-                    $currentVlan = trim($parts[1]);
-                    // Si coincide con la VLAN esperada para esta sala
-                    if ($currentVlan == $expectedVlan) {
-                        $status[$salaId] = true;
-                        $vlans[$salaId] = $currentVlan;
-                    }
-                }
-            }
+            
         }
 
         return ['status' => $status, 'vlans' => $vlans];

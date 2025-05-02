@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250424123028 extends AbstractMigration
+final class Version20250502062110 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,11 +21,12 @@ final class Version20250424123028 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE switch_salas ADD vlan VARCHAR(255) DEFAULT 'FAKEVLAN' NOT NULL
+            CREATE TABLE IF NOT EXISTS switch_salas (id INT NOT NULL, nombre VARCHAR(255) NOT NULL, ip VARCHAR(15) NOT NULL, puertos VARCHAR(255) DEFAULT '0' NOT NULL, PRIMARY KEY(id))
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE switch_salas ADD puertos VARCHAR(255) DEFAULT 'FAKEPUERTO1 FAKEPUERTO2' NOT NULL
+            CREATE UNIQUE INDEX UNIQ_AD8F32DD3A909126 ON switch_salas (nombre)
         SQL);
+        
     }
 
     public function down(Schema $schema): void
@@ -35,10 +36,7 @@ final class Version20250424123028 extends AbstractMigration
             CREATE SCHEMA public
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE switch_salas DROP vlan
-        SQL);
-        $this->addSql(<<<'SQL'
-            ALTER TABLE switch_salas DROP puertos
+            DROP TABLE switch_salas
         SQL);
     }
 }

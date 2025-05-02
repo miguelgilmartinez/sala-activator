@@ -19,11 +19,8 @@ class SwitchSalas {
     #[ORM\Column(length: 15, unique: true)]
     private ?string $ip = null;
 
-    #[ORM\Column(length: 255, options: ['default' => 'FAKEVLAN'])]
-    private ?string $vlan = 'FAKEVLAN';
-
-    #[ORM\Column(length: 255, options: ['default' => 'FAKEPUERTO1 FAKEPUERTO2'])]
-    private ?string $puertos = 'FAKEPUERTO1 FAKEPUERTO2';
+    #[ORM\Column(length: 255, options: ['default' => '0'])]
+    private ?string $puertos = '0';
 
     public function getId(): ?int {
         return $this->id;
@@ -72,8 +69,8 @@ class SwitchSalas {
         $salas['id'] = $this->id;
         $salas['ip'] = $this->ip;
         $salas['nombre'] = $this->nombre;
-        $salas['puerto'] = $this->puertos;
-        $salas['vlan'] = $this->vlan;
+        $salas['puertos'] = $this->puertos;
+         
         return $salas;
     }
 }

@@ -1,4 +1,6 @@
 #!/bin/bash
+
+echo "$(date '+[%Y-%m-%d %H:%M:%S]') FIJARESTADO" >> /tmp/salas.log
 swPlanta=$1
 shift
 vlan=$1

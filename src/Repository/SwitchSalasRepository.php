@@ -9,11 +9,20 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<SwitchSalas>
  */
-class SwitchSalasRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
-    {
+class SwitchSalasRepository extends ServiceEntityRepository {
+
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, SwitchSalas::class);
+    }
+
+    /**
+     * Devuelte las IP de los switches configurados en el sistema, sin repetir
+     * @return array
+     */
+    public function getIPsSwitches(): array {
+        $result = $this->getEntityManager()->getConnection()
+                ->executeQuery("SELECT DISTINCT ip FROM switch_salas;");
+        return $result->fetchAllAssociative();
     }
 
     //    /**
@@ -30,7 +39,6 @@ class SwitchSalasRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
-
     //    public function findOneBySomeField($value): ?SwitchSalas
     //    {
     //        return $this->createQueryBuilder('s')

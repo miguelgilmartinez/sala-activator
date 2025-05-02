@@ -34,5 +34,12 @@ Configurar SNMP con /etc/snmp/snmp.conf. Añadir la línea
 `mibdirs /usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/opt/netdisco-mibs/cisco`
 
 
+## Logs
+
+
+Se guardan los de los scripts para comprobar que el sistema funciona en 
+/tmp/salas.log
+
+
 
 Copyright (C) [2025] [Agencia Digital de Andalucía]
