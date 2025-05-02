@@ -235,16 +235,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Estado local de las salas
             const salasStatus = {
-        {% for sala, status in salasStatus %}
-                    '{{ sala }}':{{ status ? 'true' : 'false' }},
-        {% endfor %}
+                    {% for salas  in salasStatus %}
+                                '{{ sala }}':{{ status ? 'true' : 'false' }},
+                    {% endfor %}
                 };
-                // Datos de VLAN por sala
-                const salasVlans = {
-        {% for sala, vlan in salasVlans|default({}) %}
-                    '{{ sala }}': '{{ vlan }}',
-        {% endfor %}
-                };
+               
 
                 const refreshIndicator = document.getElementById('refresh-indicator');
                 refreshIndicator.style.display = 'none';

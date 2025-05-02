@@ -22,11 +22,10 @@ class SalaController extends AbstractController {
 
     #[Route('/', name: 'app_sala_index')]
     public function index(): Response {
-        $salasStatus = $this->bashScriptService->getSalasStatus();
-//        $$salasStatus = array_map(function (SwitchSalas $sala) {
+//       $salasStatus = array_map(function (SwitchSalas $sala) {
 //            return $sala->toArray();
 //        }, $this->ssRepo->findAll());
-        return $this->render('sala/index.html.twig', $salasStatus);
+        return $this->render('sala/index.html.twig', $this->bashScriptService->getVlansStatus());
     }
 
     #[Route('/toggle-sala', name: 'app_sala_toggle', methods: ['POST'])]
