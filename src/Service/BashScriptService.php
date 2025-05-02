@@ -48,27 +48,40 @@ class BashScriptService {
     private function getSwitchesStatus(): array {
         // Ejecuta el script leer_estado_salas pasando la IP del switch
         $ips = $this->ssRepo->getIPsSwitches();
+        $resultado = [];
         foreach ($ips as $ip) {
             $process = new Process([$this->leerEstadoSala, $ip['ip']]);
-            $process->run();
+             $process->run();
             if (!$process->isSuccessful()) {
                 throw new ProcessFailedException($process);
             }
-            $output = explode("\n", $process->getOutput());
-            foreach ($output as $line) {
-                $parts = preg_split('/\s+/', trim($line));
-                if (count($parts) >= 2) {
-                    $currentVlan = trim($parts[1]);
-                    // Si coincide con la VLAN esperada para esta sala
-                    if ($currentVlan == $expectedVlan) {
-                        $status[$salaId] = true;
-                        $vlans[$salaId] = $currentVlan;
+            
+            // Dividir línea por línea
+            foreach (explode("\n", $process->getOutput()) as $linea) {
+                // Eliminar espacios extra y saltar líneas vacías
+                $linea = trim($linea);
+                if ($linea === '')
+                    continue;
+                // Separar por espacios múltiples o tabulaciones
+                preg_match('/^\s*(\S+)\s+(\S+)(.*)$/', $linea, $matches);
+                if (isset($matches[1], $matches[2])) {
+                    $grupo = $matches[1];
+                    $valor = $matches[2];
+                    // Si no existe el grupo, crearlo
+                    if (!isset($resultado[$grupo])) {
+                        $resultado[$grupo] = '';
                     }
+                    // Concatenar valor al grupo correspondiente
+                    $resultado[$grupo] .= ' ' . $valor;
                 }
             }
+
+//            foreach ($resultado as &$valores) {
+//                $valores = ltrim($valores);
+//            }
         }
 
-        return [];
+        return $resultado;
     }
 
     /**
@@ -85,7 +98,6 @@ class BashScriptService {
             $vlans[$salaId] = '0';    // VLAN 0 = desactivada
         }
         $this->salaParameters = $this->getSwitchesStatus();
-
         foreach ($this->salaParameters as $sala) {
             
         }
