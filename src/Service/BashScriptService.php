@@ -41,7 +41,7 @@ class BashScriptService {
         ];
     }
 
-    private function getVlansStatus(): array {
+    public function getVlansStatus(): array {
         // Ejecuta el script leer_estado_salas pasando la IP del switch
         $ips = $this->ssRepo->getIPsSwitches();
         $resultado = [];
@@ -53,13 +53,13 @@ class BashScriptService {
             }
 
             // Dividir línea por línea
-            foreach (explode("\n", $process->getOutput()) as $linea) {
+            foreach (explode("\n", $process->getOutput()) as $vlan_puerto) {
                 // Eliminar espacios extra y saltar líneas vacías
-                $linea = trim($linea);
-                if ($linea === '')
+                $vlan_puerto = trim($vlan_puerto);
+                if ($vlan_puerto === '')
                     continue;
                 // Separar por espacios múltiples o tabulaciones
-                preg_match('/^\s*(\S+)\s+(\S+)(.*)$/', $linea, $matches);
+                preg_match('/^\s*(\S+)\s+(\S+)(.*)$/', $vlan_puerto, $matches);
                 if (isset($matches[1], $matches[2])) {
                     $grupo = $matches[1];
                     $valor = $matches[2];
