@@ -27,8 +27,8 @@ class SalaController extends AbstractController {
 //            return $sala->toArray();
 //        }, $this->ssRepo->findAll());
         return $this->render('sala/index.html.twig',
-
-                         ['salas' => $this->bashScriptService->getVlansStatus(),
+                        ['salas' => $this->ssRepo->findAll(),
+                            'vlans' => $this->bashScriptService->getVlansStatus(),
                             'consejerias' => $this->getVlanConsejerias()]);
     }
 

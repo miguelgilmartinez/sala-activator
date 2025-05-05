@@ -55,7 +55,6 @@ class BashScriptService {
         $vlansAMostrar = array_map(function (VlanConsejeria $i) {
             return $i->getVlanid();
         }, $this->vcRepo->findAll());
-
         foreach ($ips as $ip) {
             $resultado[$ip['ip']] = [];
             $process = new Process([$this->leerEstadoSala, $ip['ip']]);

@@ -36,17 +36,20 @@
     }
 
     .sala-map-container {
+      display: flex;
+      justify-content: space-around;
       position: relative;
       width: 800px;
       height: 500px;
       background-size: contain;
       margin: 0 auto;
       border: 1px solid #ccc;
+      flex-wrap: wrap;
     }
 
     .sala {
-      position: absolute;
-      width: 150px;
+      flex: 1 0 calc(33.333% - 20px); /* 33.33% del ancho menos los márgenes */
+     
       height: 150px;
       border-radius: 10px;
       display: flex;
@@ -70,54 +73,6 @@
 
     .sala:hover {
       transform: scale(1.05);
-    }
-
-    /* Estilos para los bordes según el valor de la segunda columna */
-    .vlan-101 {
-      border: 4px solid #FF5733;
-    }
-    .vlan-102 {
-      border: 4px solid #33FF57;
-    }
-    .vlan-103 {
-      border: 4px solid #3357FF;
-    }
-    .vlan-104 {
-      border: 4px solid #F033FF;
-    }
-    .vlan-106 {
-      border: 4px solid #FF33A8;
-    }
-    .vlan-110 {
-      border: 4px solid #33FFF6;
-    }
-    .vlan-0 {
-      border: 4px solid #888888;
-    }
-
-    #sala-1 {
-      top: 50px;
-      left: 100px;
-    }
-    #sala-2 {
-      top: 50px;
-      left: 300px;
-    }
-    #sala-3 {
-      top: 50px;
-      left: 500px;
-    }
-    #sala-4 {
-      top: 250px;
-      left: 100px;
-    }
-    #sala-6 {
-      top: 250px;
-      left: 300px;
-    }
-    #sala-palomar {
-      top: 250px;
-      left: 500px;
     }
 
     .control-panel {
@@ -169,22 +124,16 @@
     </div>
     <h1 class="text-center mb-4">Control de Salas</h1>
     <div class="sala-map-container" id="sala-map">
-      {% for    %}
-      <div class="sala {#{% if salas['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salas['Palomar']|default('0') }}#}" id="sala-palomar" data-sala-id="Palomar">
-        <div class="sala-nombre">Sala<br/> Planta 7</div>
-        <select class="departamento-select">
-          {% for consejeria in consejerias %}
-             <option value="{{ consejeria['vlanId'] }} poner los puertos30 33 34">{{ consejeria['nombre'] }}</option >
-          
-          {% endfor %}
-
-
-
-    {#      <option value="{{ con[1] }} 30 33 34">Fomento</option >
-          <option value="{{ switchesIP[1] }} 31 34 35">EIM</option>
-          <option value="{{ switchesIP[1] }} 32 35 36">Hacienda</option>#}
-        </select>
-      </div>
+      {% for sala in salas %}
+        <div class="sala sala-active {#{% if salas['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salas['Palomar']|default('0') }}#}" id="sala-{{ sala.id }}" data-sala-id="{{ sala.id }}">
+          <div class="sala-nombre">{{ sala.nombre }}</div>
+          <select class="departamento-select">
+            {% for consejeria in consejerias %}
+              <option value="{{ consejeria['vlanId'] }} {{ sala.puertos }}">{{ consejeria['nombre'] }}</option >
+            {% endfor %}
+          </select>
+        </div> 
+      {% endfor %}
     </div>
 
     <div class="control-panel">
