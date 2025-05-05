@@ -167,49 +167,8 @@
         <div class="refresh-indicator" id="refresh-indicator">
             Actualizando...
         </div>
-
         <h1 class="text-center mb-4">Control de Salas</h1>
-
         <div class="sala-map-container" id="sala-map">
-            <div class="sala {% if salasStatus['1'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['1']|default('0') }}" id="sala-1" data-sala-id="1">
-                <div class="sala-nombre">Sala 1</div>
-                <select class="departamento-select">
-                    <option value="{{ switchesIP[0] }} 30 33 34">Fomento</option>
-                    <option value="{{ switchesIP[0] }} 31 34 35">EIM</option>
-                    <option value="{{ switchesIP[0] }} 32 35 36">Hacienda</option>
-                </select>
-            </div>
-            <div class="sala {% if salasStatus['2'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['2']|default('0') }}" id="sala-2" data-sala-id="2">
-                <div class="sala-nombre">Sala 2</div>
-                <select class="departamento-select">
-                    <option value="{{ switchesIP[0] }} 30 33 34">Fomento</option>
-                    <option value="{{ switchesIP[0] }} 31 34 35">EIM</option>
-                    <option value="{{ switchesIP[0] }} 32 35 36">Hacienda</option>
-                </select>
-            </div>
-            <div class="sala {% if salasStatus['3'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['3']|default('0') }}" id="sala-3" data-sala-id="3">
-                <div class="sala-nombre">Sala 3</div>
-                <select class="departamento-select">
-                    <option value="{{ switchesIP[0] }} 30 33 34">Fomento</option>
-                    <option value="{{ switchesIP[0] }} 31 34 35">EIM</option>
-                    <option value="{{ switchesIP[0] }} 32 35 36">Hacienda</option>
-                </select>
-            </div>
-            <div class="sala {% if salasStatus['4'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['4']|default('0') }}" id="sala-4" data-sala-id="4">
-                <div class="sala-nombre">Sala 4</div>
-                <select class="departamento-select">
-                    <option value="{{ switchesIP[0] }} 30 33 34">Fomento</option>
-                    <option value="{{ switchesIP[0] }} 31 34 35">EIM</option>
-                    <option value="{{ switchesIP[0] }} 32 35 36">Hacienda</option>
-                </select>
-            </div>
-            <div class="sala {% if salasStatus['6'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['6']|default('0') }}" id="sala-6" data-sala-id="6">
-                <div class="sala-nombre">Sala 6</div><select class="departamento-select">
-                    <option value="{{ switchesIP[0] }} 30 33 34">Fomento</option>
-                    <option value="{{ switchesIP[0] }} 31 34 35">EIM</option>
-                    <option value="{{ switchesIP[0] }} 32 35 36">Hacienda</option>
-                </select>
-            </div>
             <div class="sala {% if salasStatus['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salasVlans['Palomar']|default('0') }}" id="sala-palomar" data-sala-id="Palomar">
                 <div class="sala-nombre">Sala<br/> Planta 7</div>
                 <select class="departamento-select">
@@ -234,11 +193,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Estado local de las salas
-            const salasStatus = {
+          {#  const salasStatus = {
                     {% for salas  in salasStatus %}
                                 '{{ sala }}':{{ status ? 'true' : 'false' }},
                     {% endfor %}
-                };
+                };#}
                
 
                 const refreshIndicator = document.getElementById('refresh-indicator');

@@ -41,11 +41,16 @@ class BashScriptService {
         ];
     }
 
+    /**
+     *
+     * @return array vlan y primer puerto encontrado
+     * @throws ProcessFailedException
+     */
     public function getVlansStatus(): array {
         // Ejecuta el script leer_estado_salas pasando la IP del switch
         $ips = $this->ssRepo->getIPsSwitches();
-        $resultado = [];
         foreach ($ips as $ip) {
+            $resultado[$ip['ip']] = [];
             $process = new Process([$this->leerEstadoSala, $ip['ip']]);
             $process->run();
             if (!$process->isSuccessful()) {
@@ -61,14 +66,12 @@ class BashScriptService {
                 // Separar por espacios múltiples o tabulaciones
                 preg_match('/^\s*(\S+)\s+(\S+)(.*)$/', $vlan_puerto, $matches);
                 if (isset($matches[1], $matches[2])) {
-                    $grupo = $matches[1];
-                    $valor = $matches[2];
+                    $vlan = $matches[1];
+                    $puerto = $matches[2];
                     // Si no existe el grupo, crearlo
-                    if (!isset($resultado[$grupo])) {
-                        $resultado[$grupo] = '';
+                    if (!isset($resultado[$ip['ip']][$vlan])) {
+                        $resultado[$ip['ip']][$vlan] = $puerto;
                     }
-                    // Concatenar valor al grupo correspondiente
-                    $resultado[$grupo] .= ' ' . $valor;
                 }
             }
         }
