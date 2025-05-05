@@ -9,11 +9,16 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<VlanConsejeria>
  */
-class VlanConsejeriaRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
-    {
+class VlanConsejeriaRepository extends ServiceEntityRepository {
+
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, VlanConsejeria::class);
+    }
+
+    public function getVlansDisponibles(): array {
+        return $this->getEntityManager()->getConnection
+                        ()->executeQuery("SELECT vlanid FROM vlan_consejeria")
+                        ->fetchAllNumeric();
     }
 
     //    /**
@@ -30,7 +35,6 @@ class VlanConsejeriaRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
-
     //    public function findOneBySomeField($value): ?VlanConsejeria
     //    {
     //        return $this->createQueryBuilder('v')

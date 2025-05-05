@@ -6,6 +6,8 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Repository\SwitchSalasRepository;
+use App\Repository\VlanConsejeriaRepository;
+use App\Entity\VlanConsejeria;
 
 class BashScriptService {
 
@@ -13,7 +15,8 @@ class BashScriptService {
     private string $leerEstadoSala;
     private array $salaParameters = [];
 
-    public function __construct(ParameterBagInterface $params, private SwitchSalasRepository $ssRepo) {
+    public function __construct(ParameterBagInterface $params,
+            private VlanConsejeriaRepository $vcRepo, private SwitchSalasRepository $ssRepo) {
         // Los scripts estarán ubicados en la carpeta bin del proyecto
         $this->fijarEstadoSala = $params->get('kernel.project_dir') . '/bin/fijar_estado_sala.sh';
         $this->leerEstadoSala = $params->get('kernel.project_dir') . '/bin/leer_estado_salas.sh';
@@ -49,6 +52,10 @@ class BashScriptService {
     public function getVlansStatus(): array {
         // Ejecuta el script leer_estado_salas pasando la IP del switch
         $ips = $this->ssRepo->getIPsSwitches();
+        $vlansAMostrar = array_map(function (VlanConsejeria $i) {
+            return $i->getVlanid();
+        }, $this->vcRepo->findAll());
+
         foreach ($ips as $ip) {
             $resultado[$ip['ip']] = [];
             $process = new Process([$this->leerEstadoSala, $ip['ip']]);
@@ -69,7 +76,8 @@ class BashScriptService {
                     $vlan = $matches[1];
                     $puerto = $matches[2];
                     // Si no existe el grupo, crearlo
-                    if (!isset($resultado[$ip['ip']][$vlan])) {
+                    if (!isset($resultado[$ip['ip']][$vlan]) &&
+                            in_array($vlan, $vlansAMostrar)) {
                         $resultado[$ip['ip']][$vlan] = $puerto;
                     }
                 }
