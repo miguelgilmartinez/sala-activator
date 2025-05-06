@@ -36,7 +36,7 @@ class SalaController extends AbstractController {
     public function toggleSala(Request $request): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $salaId = $data['sala'] ?? null;
-
+        
         if (!$salaId) {
             return new JsonResponse(['error' => 'No se ha especificado una sala'],
                     Response::HTTP_BAD_REQUEST);

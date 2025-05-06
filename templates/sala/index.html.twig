@@ -139,9 +139,9 @@
         <h2 class="text-center mb-4">Control de Salas</h2>
         <div class="sala-map-container" id="sala-map">
             {% for sala in salas %}
-                <div class="sala sala-active {#{% if salas['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salas['Palomar']|default('0') }}#}" id="sala-{{ sala.id }}" data-sala-id="{{ sala.id }}">
+                <div class="sala sala-active {#{% if salas['Palomar'] %}sala-active{% else %}sala-inactive{% endif %} vlan-{{ salas['Palomar']|default('0') }}" id="sala-{{ sala.id }}" data-sala-id="{{ sala.id }}#}">
                     <div class="sala-nombre">{{ sala.nombre }}</div>
-                    <select class="departamento-select">
+                    <select class="departamento-select" id="sala-{{ sala.id }}" data-sala-id="{{ sala.id }}" data-sala-nombre="{{ sala.nombre }}">
                         {% for consejeria in consejerias %}
                             <option value="{{ consejeria['vlanId'] }} {{ sala.puertos }}">{{ consejeria['nombre'] }}</option >
                         {% endfor %}

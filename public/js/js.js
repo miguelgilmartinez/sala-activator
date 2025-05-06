@@ -1,17 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
+
     const refreshIndicator = document.getElementById('refresh-indicator');
     refreshIndicator.style.display = 'none';
     // Manejador para el clic en las salas
     document.querySelectorAll('.departamento-select').forEach(salaElement => {
         salaElement.addEventListener('change', function () {
-            const salaId = this.dataset.salaId;
-            toggleSala(salaId);
+//            const salaId = this[this.selectedIndex].value;
+            toggleSala(this.dataset.salaId, this.dataset.salaNombre);
         });
     });
-    function toggleSala(salaId) {
+
+    function toggleSala(salaId, salaNombre) {
         // Obtener el valor seleccionado del desplegable
-        const selectedValue = this.querySelector('.departamento-select').value;
-        addLogMessage(`Procesando sala ${salaId}...`);
+      //  const selectedValue = this.querySelector('.departamento-select').value;
+        addLogMessage(`Activando VLAN sala ${salaNombre}`);
         fetch('/toggle-sala', {
             method: 'POST',
             headers: {
@@ -19,13 +21,12 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({
                 sala: salaId,
-                departamento: selectedValue // Valor del desplegable
+                config:  '10 11 12' // Valor del desplegable
             })
         })
-        // ... (resto del código)
+        
     }
 
-// Función para actualizar el estado de todas las salas
     function updateSalasStatus() {
         refreshIndicator.style.display = 'block';
         fetch('/get-salas-status')
@@ -82,6 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // Configurar actualización periódica (cada minuto)
     setInterval(updateSalasStatus, 60000);
     // Actualizar estados al cargar la página
-    addLogMessage('Inicializando control de salas...');
+    addLogMessage('Inicializando control de salas');
     setTimeout(updateSalasStatus, 1000);
 });
