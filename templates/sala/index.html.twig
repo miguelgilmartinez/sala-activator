@@ -5,14 +5,28 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        .Hacienda {
+            background-color: gold;
+        }
+
+        .Fomento {
+            background-color: #bd2130;
+            color: white;
+        }
+
+        .IEM {
+            background-color: orangered;
+            color: white
+        }
+
         .sala .departamento-select {
             margin-top: 5px; /* Espaciado entre el texto de la sala y el select */
             width: 80%; /* Ajusta el ancho del select para que no ocupe todo el espacio */
             padding: 5px; /* Agrega un poco de relleno interior */
             border-radius: 3px; /* Bordes redondeados */
             border: 1px solid #ccc; /* Borde suave */
-            background-color: rgba(255, 255, 255, 0.7); /* Fondo semitransparente */
-            color: #333; /* Color de texto oscuro */
+            {#            background-color: rgba(255, 255, 255, 0.7); /* Fondo semitransparente */#}
+{#            color: #333; /* Color de texto oscuro */#}
             text-align: center; /* Centra el texto dentro del select */
             appearance: none; /* Quita el estilo predeterminado del navegador */
             -webkit-appearance: none; /* Para navegadores basados en WebKit */
@@ -38,7 +52,7 @@
         .sala-map-container {
             display: flex;
             justify-content: space-around;
-           
+
             max-width: 800px;
             background-size: contain;
             margin: 60px auto;
@@ -108,9 +122,9 @@
             width: 100%;
             border-radius: 5px;  /* Bordes un poco más redondeados */
             border: 2px solid #3498db;  /* Borde más grueso y color azul */
-            background-color: #f8f9fa;  /* Fondo ligeramente gris */
+            {#            background-color: #f8f9fa;  /* Fondo ligeramente gris */#}
             font-size: 14px;
-            color: #333;
+{#            color: #333;#}
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             appearance: none;

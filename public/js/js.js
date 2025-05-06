@@ -6,13 +6,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.departamento-select').forEach(salaElement => {
         salaElement.addEventListener('change', function () {
 //            const salaId = this[this.selectedIndex].value;
+            this.classList.remove('IEM', 'Hacienda', 'Fomento');
+            this.classList.add(this.options[this.selectedIndex].text);
             toggleSala(this.dataset.salaId, this.dataset.salaNombre);
+
         });
     });
 
     function toggleSala(salaId, salaNombre) {
         // Obtener el valor seleccionado del desplegable
-      //  const selectedValue = this.querySelector('.departamento-select').value;
+        //  const selectedValue = this.querySelector('.departamento-select').value;
         addLogMessage(`Activando VLAN sala ${salaNombre}`);
         fetch('/toggle-sala', {
             method: 'POST',
@@ -21,10 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({
                 sala: salaId,
-                config:  '10 11 12' // Valor del desplegable
+                config: '10 11 12' // Valor del desplegable
             })
         })
-        
+
     }
 
     function updateSalasStatus() {
@@ -41,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     for (const [salaId, status] of Object.entries(data)) {
                         updateSalaUI(salaId, status);
                     }
-
                     refreshIndicator.style.display = 'none';
                     addLogMessage('Estados de sala actualizados');
                 })
@@ -56,17 +58,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const salaElement = document.querySelector(`[data-sala-id="${salaId}"]`);
         if (!salaElement)
             return;
-        if (status) {
-            salaElement.classList.remove('sala-inactive');
-            salaElement.classList.add('sala-active');
-        } else {
-            salaElement.classList.remove('sala-active');
-            salaElement.classList.add('sala-inactive');
+        if (status) {  
+            
         }
 
-// También actualizar el borde según VLAN
-// Aquí necesitamos el valor de VLAN que vendría en una respuesta extendida
-// Por ahora solo actualizamos el estado activo/inactivo
     }
 
 // Añadir mensaje al log
