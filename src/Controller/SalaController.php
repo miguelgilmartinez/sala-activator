@@ -55,7 +55,7 @@ class SalaController extends AbstractController {
     #[Route('/get-salas-status', name: 'app_sala_status', methods: ['GET'])]
     public function getSalasStatus(): JsonResponse {
         try {
-            //$salasStatus = $this->bashScriptService->getSalasStatus();
+            $salasStatus = $this->bashScriptService->getVlansStatus();
             return new JsonResponse($salasStatus);
         }
         catch (\Exception $e) {
@@ -65,7 +65,6 @@ class SalaController extends AbstractController {
     }
 
     private function getVlanConsejerias(): array {
-
         return array_map(function (\App\Entity\VlanConsejeria $item) {
             return ['vlanId' => $item->getVlanid(),
                 'nombre' => $item->getConsejeria()];
