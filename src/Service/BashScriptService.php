@@ -49,39 +49,32 @@ class BashScriptService {
      * @return array vlan y primer puerto encontrado
      * @throws ProcessFailedException
      */
-    public function getVlansStatus(): array {
+    public function getVlansStatus(string $switchIP): string {
         // Ejecuta el script leer_estado_salas pasando la IP del switch
-        $ips = $this->ssRepo->getIPsSwitches();
-        $vlansAMostrar = array_map(function (VlanConsejeria $i) {
-            return $i->getVlanid();
-        }, $this->vcRepo->findAll());
-        foreach ($ips as $ip) {
-            $resultado[$ip['ip']] = [];
-            $process = new Process([$this->leerEstadoSala, $ip['ip']]);
-            $process->run();
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
-
-            // Dividir línea por línea
-            foreach (explode("\n", $process->getOutput()) as $vlan_puerto) {
-                // Eliminar espacios extra y saltar líneas vacías
-                $vlan_puerto = trim($vlan_puerto);
-                if ($vlan_puerto === '')
-                    continue;
-                // Separar por espacios múltiples o tabulaciones
-                preg_match('/^\s*(\S+)\s+(\S+)(.*)$/', $vlan_puerto, $matches);
-                if (isset($matches[1], $matches[2])) {
-                    $vlan = $matches[1];
-                    $puerto = $matches[2];
-                    // Si no existe el grupo, crearlo
-                    if (!isset($resultado[$ip['ip']][$vlan]) &&
-                            in_array($vlan, $vlansAMostrar)) {
-                        $resultado[$ip['ip']][$vlan] = $puerto;
-                    }
-                }
-            }
+        $process = new Process([$this->leerEstadoSala, $switchIP]);
+        $process->run();
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
         }
-        return $resultado;
+
+//        // Dividir línea por línea
+//        foreach (explode("\n", $process->getOutput()) as $vlan_puerto) {
+//            // Eliminar espacios extra y saltar líneas vacías
+//            $vlan_puerto = trim($vlan_puerto);
+//            if ($vlan_puerto === '')
+//                continue;
+//            // Separar por espacios múltiples o tabulaciones
+//            preg_match('/^\s*(\S+)\s+(\S+)(.*)$/', $vlan_puerto, $matches);
+//            if (isset($matches[1], $matches[2])) {
+//                $vlan = $matches[1];
+//                $puerto = $matches[2];
+//                // Si no existe el grupo, crearlo
+//                if (!isset($resultado[$ip['ip']][$vlan]) &&
+//                        in_array($vlan, $vlansAMostrar)) {
+//                    $resultado[$ip['ip']][$vlan] = $puerto;
+//                }
+//            }
+//        }
+        return $process->getOutput();
     }
 }

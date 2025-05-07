@@ -63,10 +63,14 @@ class SalaController extends AbstractController {
     }
 
     private function getVlansSalas(): array {
-        $vlanStatus = $this->bashScriptService->getVlansStatus();
         $salas = $this->ssRepo->findAll();
         $salaVlan = [];
+        $ipSwitches = $this->ssRepo->getIPsSwitches();
+        foreach ($ipSwitches as $ip) {
+            $vlanStatus[$sala->getIp()] = $this->bashScriptService->getVlansStatus($sala->getIp());
+        }
         foreach ($salas as $sala) {
+
             $primerPuerto = explode(' ', $sala->getPuertos());
             $salaVlan[$sala->getId()] = array_search($primerPuerto[0], $vlanStatus[$sala->getIp()]);
         }
