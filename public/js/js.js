@@ -60,9 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (primerValor === status) {
                 option.setAttribute('selected', 'selected'); // Marca como seleccionado
                 salaElement.value = option.value; // Asignamos el valor al select
-//                salaElement.classList.remove('IEM', 'Hacienda', 'Fomento');
-//                salaElement.classList.add(this.options[this.selectedIndex].text);
-
+                salaElement.classList.remove('IEM', 'Hacienda', 'Fomento');
+                salaElement.classList.add(salaElement.options[salaElement.selectedIndex].text);
             }
         });
     }
