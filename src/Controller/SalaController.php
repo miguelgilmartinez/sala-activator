@@ -28,7 +28,8 @@ class SalaController extends AbstractController {
 //        }, $this->ssRepo->findAll());
         return $this->render('sala/index.html.twig',
                         ['salas' => $this->ssRepo->findAll(),
-                            'vlans' => $this->bashScriptService->getVlansStatus(),
+                            'vlans' => $this->getVlansSalas(),
+                            //'vlans' => $this->bashScriptService->getVlansStatus(),
                             'consejerias' => $this->getVlanConsejerias()]);
     }
 
@@ -36,7 +37,7 @@ class SalaController extends AbstractController {
     public function toggleSala(Request $request): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $salaId = $data['sala'] ?? null;
-        
+
         if (!$salaId) {
             return new JsonResponse(['error' => 'No se ha especificado una sala'],
                     Response::HTTP_BAD_REQUEST);
@@ -45,8 +46,7 @@ class SalaController extends AbstractController {
         try {
             $result = $this->bashScriptService->toggleSala($salaId);
             return new JsonResponse($result);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()],
                     Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -55,13 +55,15 @@ class SalaController extends AbstractController {
     #[Route('/get-salas-status', name: 'app_sala_status', methods: ['GET'])]
     public function getSalasStatus(): JsonResponse {
         try {
-            $salasStatus = $this->bashScriptService->getVlansStatus();
-            return new JsonResponse($salasStatus);
-        }
-        catch (\Exception $e) {
+            return new JsonResponse($this->getVlansSalas());
+        } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()],
                     Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private function getVlansSalas(): array {
+        return [1 => 20, 2 => 30, 3 => 50, 4 => 30, 5 => 20, 6 => 50];
     }
 
     private function getVlanConsejerias(): array {

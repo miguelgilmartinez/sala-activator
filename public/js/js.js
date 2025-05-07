@@ -5,11 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Manejador para el clic en las salas
     document.querySelectorAll('.departamento-select').forEach(salaElement => {
         salaElement.addEventListener('change', function () {
-//            const salaId = this[this.selectedIndex].value;
+            // const salaId = this[this.selectedIndex].value;
             this.classList.remove('IEM', 'Hacienda', 'Fomento');
             this.classList.add(this.options[this.selectedIndex].text);
             toggleSala(this.dataset.salaId, this.dataset.salaNombre);
-
         });
     });
 
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 config: '10 11 12' // Valor del desplegable
             })
         })
-
     }
 
     function updateSalasStatus() {
@@ -53,18 +51,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
     }
 
-// Actualizar el UI de una sala
+    // Actualizar el UI de una sala
     function updateSalaUI(salaId, status) {
         const salaElement = document.querySelector(`[data-sala-id="${salaId}"]`);
-        if (!salaElement)
-            return;
-        if (status) {  
-            
-        }
+        // Buscamos la opción cuyo value empieza por el número indicado en el JSON
+        Array.from(salaElement.options).find(option => {
+            const primerValor = parseInt(option.value.split(' ')[0]); // Primer número del value
+            if (primerValor === status) {
+                option.setAttribute('selected', 'selected'); // Marca como seleccionado
+                salaElement.value = option.value; // Asignamos el valor al select
+//                salaElement.classList.remove('IEM', 'Hacienda', 'Fomento');
+//                salaElement.classList.add(this.options[this.selectedIndex].text);
 
+            }
+        });
     }
 
-// Añadir mensaje al log
+    // Añadir mensaje al log
     function addLogMessage(message, type = 'info') {
         const logElement = document.getElementById('status-log');
         const timestamp = new Date().toLocaleTimeString();
@@ -75,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         logElement.scrollTop = logElement.scrollHeight;
     }
 
-// Configurar actualización periódica (cada minuto)
+    // Configurar actualización periódica (cada minuto)
     setInterval(updateSalasStatus, 60000);
     // Actualizar estados al cargar la página
     addLogMessage('Inicializando control de salas');
