@@ -67,12 +67,23 @@ class SalaController extends AbstractController {
         $salaVlan = [];
         $ipSwitches = $this->ssRepo->getIPsSwitches();
         foreach ($ipSwitches as $ip) {
-            $vlanStatus[$sala->getIp()] = $this->bashScriptService->getVlansStatus($sala->getIp());
+            $vlanStatus[$ip['ip']] = array_map(function ($i) {
+                $items = explode(' ', $i);
+                return [$items[0] => end($items)];
+            }, explode("\n", $this->bashScriptService->getVlansStatus($ip['ip'])));
         }
-        foreach ($salas as $sala) {
 
-            $primerPuerto = explode(' ', $sala->getPuertos());
-            $salaVlan[$sala->getId()] = array_search($primerPuerto[0], $vlanStatus[$sala->getIp()]);
+        $vlanStatusSimple = [];
+        foreach ($vlanStatus as $k => $v) {
+            $v = array_slice($v, 0, 48);
+            foreach ($v as $x) {
+                $vlanStatusSimple[$k][key($x)] = reset($x);
+            }
+        }
+
+        foreach ($salas as $sala) {
+            $primerPuerto = explode(' ', $sala->getPuertos())[0];
+            $salaVlan[$sala->getId()] =   $vlanStatusSimple[$sala->getIp()][$primerPuerto];
         }
         return $salaVlan; // [1 => 20, 2 => 30, 3 => 50, 4 => 30, 5 => 20, 6 => 50];
     }

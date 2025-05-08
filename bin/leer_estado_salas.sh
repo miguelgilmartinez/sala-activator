@@ -3,7 +3,7 @@
 # Script de lectura DEV
  
 echo "$(date '+[%Y-%m-%d %H:%M:%S]') LEERESTADO" >> /tmp/salas.log
-ARCHIVO="/home/miguel/Documentos/Trabajo/JdA/sala-activator/bin/snmpwalksalida_dev_vlan_puerto.txt"
+ARCHIVO="/home/miguel/Documentos/Trabajo/JdA/sala-activator/bin/snmpwalksalida_dev_puerto_vlan.txt"
 
 # Verificar si el archivo existe
 if [ ! -f "$ARCHIVO" ]; then

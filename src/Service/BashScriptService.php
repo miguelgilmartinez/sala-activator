@@ -13,7 +13,7 @@ class BashScriptService {
 
     private string $fijarEstadoSala;
     private string $leerEstadoSala;
-    private array $salaParameters = [];
+//    private array $salaParameters = [];
 
     public function __construct(ParameterBagInterface $params,
             private VlanConsejeriaRepository $vcRepo, private SwitchSalasRepository $ssRepo) {
