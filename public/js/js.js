@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function toggleSala(salaId, salaNombre, vlan, consejeria) {
-        console.log(salaId, salaNombre, vlan);
+        console.log(salaNombre, '->', vlan);
         // Obtener el valor seleccionado del desplegable
         //  const selectedValue = this.querySelector('.departamento-select').value;
         addLogMessage(`Activando VLAN ${vlan} (${consejeria}) en ${salaNombre}`);
@@ -23,10 +23,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                sala: salaId,
-                vlan: vlan  
+                salaId: salaId,
+                vlan: vlan
             })
-        })
+        }).then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        addLogMessage(`Error: ${data.error}`, 'error');
+                        return;
+                    }
+                    console.log(data);
+                    addLogMessage(`Sala ${data.sala} modificada a vlan ${data.vlan}`);
+                })
+                .catch(error => {
+                    refreshIndicator.style.display = 'none';
+                    addLogMessage(`Error al modificar vlan: ${error.message}`, 'error');
+                });
     }
 
     function updateSalasStatus() {

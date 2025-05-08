@@ -23,9 +23,6 @@ class SalaController extends AbstractController {
 
     #[Route('/', name: 'app_sala_index')]
     public function index(): Response {
-//       $salasStatus = array_map(function (SwitchSalas $sala) {
-//            return $sala->toArray();
-//        }, $this->ssRepo->findAll());
         return $this->render('sala/index.html.twig',
                         ['salas' => $this->ssRepo->findAllSortedById(),
                             'vlans' => $this->getVlansSalas(),
@@ -42,7 +39,7 @@ class SalaController extends AbstractController {
         }
 
         try {
-            $result = $this->bashScriptService->toggleSala($salaId);
+            $result = $this->bashScriptService->toggleSala($data);
             return new JsonResponse($result);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()],
