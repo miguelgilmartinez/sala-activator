@@ -27,7 +27,7 @@ class SalaController extends AbstractController {
 //            return $sala->toArray();
 //        }, $this->ssRepo->findAll());
         return $this->render('sala/index.html.twig',
-                        ['salas' => $this->ssRepo->findAll(),
+                        ['salas' => $this->ssRepo->findAllSortedById(),
                             'vlans' => $this->getVlansSalas(),
                             //'vlans' => $this->bashScriptService->getVlansStatus(),
                             'consejerias' => $this->getVlanConsejerias()]);
@@ -83,7 +83,7 @@ class SalaController extends AbstractController {
 
         foreach ($salas as $sala) {
             $primerPuerto = explode(' ', $sala->getPuertos())[0];
-            $salaVlan[$sala->getId()] =   $vlanStatusSimple[$sala->getIp()][$primerPuerto];
+            $salaVlan[$sala->getId()] = $vlanStatusSimple[$sala->getIp()][$primerPuerto];
         }
         return $salaVlan; // [1 => 20, 2 => 30, 3 => 50, 4 => 30, 5 => 20, 6 => 50];
     }

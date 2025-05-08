@@ -25,6 +25,14 @@ class SwitchSalasRepository extends ServiceEntityRepository {
         return $result->fetchAllAssociative();
     }
 
+    public function findAllSortedById(): array {
+        $salas = $this->findAll();
+        usort($salas, function ($a, $b) {
+            return $a->getId() <=> $b->getId();
+        });
+        return $salas;
+    }
+
     //    /**
     //     * @return SwitchSalas[] Returns an array of SwitchSalas objects
     //     */

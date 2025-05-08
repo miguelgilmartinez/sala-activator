@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Buscamos la opción cuyo value empieza por el número indicado en el JSON
         Array.from(salaElement.options).find(option => {
             const primerValor = parseInt(option.value.split(' ')[0]); // Primer número del value
-            if (primerValor === status) {
+            if (primerValor == status) {
                 option.setAttribute('selected', 'selected'); // Marca como seleccionado
                 salaElement.value = option.value; // Asignamos el valor al select
                 salaElement.classList.remove('IEM', 'Hacienda', 'Fomento');
