@@ -1,10 +1,11 @@
 #!/bin/bash
 
-echo "$(date '+[%Y-%m-%d %H:%M:%S]') FIJARESTADO" >> /tmp/salas.log
 swPlanta=$1
 shift
 vlan=$1
 shift 
+echo "$(date '+[%Y-%m-%d %H:%M:%S]') FIJARESTADO $swPlanta $vlan" >> /tmp/salas.log
+
 roclave="public"
 rwclave="carchuto"
 # Para pruebas, simulamos la ejecución del comando SNMP

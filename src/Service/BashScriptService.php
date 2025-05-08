@@ -31,6 +31,7 @@ class BashScriptService {
         $process->run();
 
         if (!$process->isSuccessful()) {
+            $this->l->critical("Error ejecutando script de fijarEstadoSala");
             throw new ProcessFailedException($process);
         }
 
