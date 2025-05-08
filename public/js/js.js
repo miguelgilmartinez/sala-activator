@@ -8,14 +8,15 @@ document.addEventListener('DOMContentLoaded', function () {
             // const salaId = this[this.selectedIndex].value;
             this.classList.remove('IEM', 'Hacienda', 'Fomento');
             this.classList.add(this.options[this.selectedIndex].text);
-            toggleSala(this.dataset.salaId, this.dataset.salaNombre);
+            toggleSala(this.dataset.salaId, this.dataset.salaNombre, this.options[this.selectedIndex].value, this.options[this.selectedIndex].text);
         });
     });
 
-    function toggleSala(salaId, salaNombre) {
+    function toggleSala(salaId, salaNombre, vlan, consejeria) {
+        console.log(salaId, salaNombre, vlan);
         // Obtener el valor seleccionado del desplegable
         //  const selectedValue = this.querySelector('.departamento-select').value;
-        addLogMessage(`Activando VLAN sala ${salaNombre}`);
+        addLogMessage(`Activando VLAN ${vlan} (${consejeria}) en ${salaNombre}`);
         fetch('/toggle-sala', {
             method: 'POST',
             headers: {
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({
                 sala: salaId,
-                config: '10 11 12' // Valor del desplegable
+                vlan: vlan  
             })
         })
     }
