@@ -5,7 +5,6 @@ namespace App\Service;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
- 
 
 class BashScriptService {
 
@@ -19,7 +18,6 @@ class BashScriptService {
     }
 
     /**
-
      * Ejecuta el script bash para activar/desactivar una sala
      */
     public function toggleSala(string $salaId, string $vlan): array {
@@ -38,7 +36,6 @@ class BashScriptService {
     }
 
     /**
-     *
      * @return array vlan y primer puerto encontrado
      * @throws ProcessFailedException
      */
@@ -49,25 +46,6 @@ class BashScriptService {
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
-
-//        // Dividir línea por línea
-//        foreach (explode("\n", $process->getOutput()) as $vlan_puerto) {
-//            // Eliminar espacios extra y saltar líneas vacías
-//            $vlan_puerto = trim($vlan_puerto);
-//            if ($vlan_puerto === '')
-//                continue;
-//            // Separar por espacios múltiples o tabulaciones
-//            preg_match('/^\s*(\S+)\s+(\S+)(.*)$/', $vlan_puerto, $matches);
-//            if (isset($matches[1], $matches[2])) {
-//                $vlan = $matches[1];
-//                $puerto = $matches[2];
-//                // Si no existe el grupo, crearlo
-//                if (!isset($resultado[$ip['ip']][$vlan]) &&
-//                        in_array($vlan, $vlansAMostrar)) {
-//                    $resultado[$ip['ip']][$vlan] = $puerto;
-//                }
-//            }
-//        }
         return $process->getOutput();
     }
 }
