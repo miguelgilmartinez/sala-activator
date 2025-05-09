@@ -57,9 +57,11 @@ class SalaController extends AbstractController {
         }
     }
 
+    /**
+     * 
+     * @return array  [SalaId => Vlan];
+     */
     private function getVlansSalas(): array {
-        $salas = $this->ssRepo->findAll();
-        $salaVlan = [];
         $ipSwitches = $this->ssRepo->getIPsSwitches();
         foreach ($ipSwitches as $ip) {
             $vlanStatus[$ip['ip']] = array_map(function ($i) {
@@ -67,7 +69,6 @@ class SalaController extends AbstractController {
                 return [$items[0] => end($items)];
             }, explode("\n", $this->bashScriptService->getVlansStatus($ip['ip'])));
         }
-
         $vlanStatusSimple = [];
         foreach ($vlanStatus as $k => $v) {
             $v = array_slice($v, 0, 48);
@@ -76,12 +77,17 @@ class SalaController extends AbstractController {
             }
         }
 
+        // Obtenemos los puertos de cada vlan
+        $salas = $this->ssRepo->findAll();
+        $salaVlan = [];
         foreach ($salas as $sala) {
             $primerPuerto = explode(' ', $sala->getPuertos())[0];
             $salaVlan[$sala->getId()] = $vlanStatusSimple[$sala->getIp()][$primerPuerto];
         }
         return $salaVlan; // [1 => 20, 2 => 30, 3 => 50, 4 => 30, 5 => 20, 6 => 50];
     }
+
+ 
 
     private function getVlanConsejerias(): array {
         return array_map(function (\App\Entity\VlanConsejeria $item) {

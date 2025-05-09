@@ -1,18 +1,8 @@
 #!/bin/bash
 
-# Script de lectura DEV
- 
+#swPlanta="192.168.66.19" #DEV
+swPlanta=$1 #PROD
+roclave="public"
+#echo "PUERTA VLAN ($swPlanta)" #DEV
 echo "$(date '+[%Y-%m-%d %H:%M:%S]') LEERESTADO" >> /tmp/salas.log
-ARCHIVO="/home/miguel/Documentos/Trabajo/JdA/sala-activator/bin/snmpwalksalida_dev_puerto_vlan.txt"
-
-# Verificar si el archivo existe
-if [ ! -f "$ARCHIVO" ]; then
-  echo "❌ El archivo $ARCHIVO no existe."
-  exit 1
-fi
-
-# Leer el archivo línea por línea
-while IFS= read -r linea
-do
-  echo "$linea"
-done < "$ARCHIVO"
+snmpwalk -v 2c -c $roclave $swPlanta CISCO-VLAN-MEMBERSHIP-MIB::vmVlan | sed 's/CISCO-VLAN-MEMBERSHIP-MIB::vmVlan.10[61]//' | awk '{print $1," ",$4}' #PROD

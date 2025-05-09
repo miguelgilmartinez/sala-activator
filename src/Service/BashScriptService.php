@@ -26,6 +26,8 @@ class BashScriptService {
     public function toggleSala(array $dataJson): array {
         $this->l->info(json_encode($dataJson));
         $switchSala = $this->ssRepo->find($dataJson['salaId']);
+        $this->l->info($switchSala->getIp() . " | " .
+                $dataJson['vlan'] . " | " . $switchSala->getPuertos());
         $process = new Process([$this->fijarEstadoSala, $switchSala->getIp(),
             $dataJson['vlan'], $switchSala->getPuertos()]);
         $process->run();
@@ -34,11 +36,12 @@ class BashScriptService {
             $this->l->critical("Error ejecutando script de fijarEstadoSala");
             throw new ProcessFailedException($process);
         }
-
+        $output = trim($process->getOutput());
+        $this->l->info("Info de la operación de fijar_estado_salas: " . $output);
         return [
-            'sala' =>$dataJson['salaId'],
-            'vlan' =>  $dataJson['vlan'],
-            'output' => trim($process->getOutput()),
+            'sala' => $dataJson['salaId'],
+            'vlan' => $dataJson['vlan'],
+            'output' => $output,
             'success' => true
         ];
     }
@@ -48,12 +51,16 @@ class BashScriptService {
      * @throws ProcessFailedException
      */
     public function getVlansStatus(string $switchIP): string {
-// Ejecuta el script leer_estado_salas pasando la IP del switch
+        // Ejecuta el script leer_estado_salas pasando la IP del switch
         $process = new Process([$this->leerEstadoSala, $switchIP]);
         $process->run();
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
-        return $process->getOutput();
+        $output = $process->getOutput();
+        if ($output == '') {
+            throw new \Exception("Error de conexión a switch $switchIP");
+        }
+        return $output;
     }
 }
