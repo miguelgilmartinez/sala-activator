@@ -1,7 +1,27 @@
-<!-- phpdoc.xml -->
-<phpdocumentor>
-    <project name="Control de salas" defaultpackagename="default">
-        <directory>src</directory>
-        <output>docs</output>
-    </project>
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor
+    configVersion="3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://www.phpdoc.org"
+    xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd">
+    <paths>
+        <output>var/phpdoc/build/api</output>
+        <cache>var/phpdoc/build/cache</cache>
+    </paths>
+    <version number="1">
+        <folder>src</folder>
+        <api>
+            <source dsn=".">
+                <path>src/Controller/</path>
+            </source>
+            <ignore hidden="true" symlinks="true">
+                <path>bin</path>
+                <path>vendor</path>
+                <path>vendor</path>
+                <path>var</path>
+                <path>templates</path>
+                <path>tests</path>
+            </ignore>
+        </api>
+    </version>
 </phpdocumentor>
