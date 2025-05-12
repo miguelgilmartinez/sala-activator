@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Switch{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Editar Switch</h1>
+    {{ include('switch_salas/_form.html.twig') }}
+    <a href="{{ path('app_switch_salas_index') }}" class="btn btn-secondary">Volver</a>
+</div>
+{% endblock %}

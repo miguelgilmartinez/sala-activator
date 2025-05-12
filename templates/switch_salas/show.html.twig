@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalle del Switch{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Detalles del Switch</h1>
+
+    <table class="table table-bordered">
+        <tr><th>ID</th><td>{{ switch.id }}</td></tr>
+        <tr><th>Nombre</th><td>{{ switch.nombre }}</td></tr>
+        <tr><th>IP</th><td>{{ switch.ip }}</td></tr>
+        <tr><th>Puertos</th><td>{{ switch.puertos }}</td></tr>
+    </table>
+
+    <a href="{{ path('app_switch_salas_index') }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ path('app_switch_salas_edit', {'id': switch.id}) }}" class="btn btn-warning">Editar</a>
+    <form method="post" action="{{ path('app_switch_salas_delete', {'id': switch.id}) }}" onsubmit="return confirm('¿Estás seguro?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ switch.id) }}">
+        <button class="btn btn-danger">Eliminar</button>
+    </form>
+</div>
+{% endblock %}

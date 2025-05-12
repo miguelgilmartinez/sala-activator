@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    <div class="mb-3">
+        {{ form_label(form.nombre) }}
+        {{ form_widget(form.nombre, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.nombre) }}
+    </div>
+    <div class="mb-3">
+        {{ form_label(form.ip) }}
+        {{ form_widget(form.ip, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.ip) }}
+    </div>
+    <div class="mb-3">
+        {{ form_label(form.puertos) }}
+        {{ form_widget(form.puertos, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.puertos) }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+{{ form_end(form) }}
