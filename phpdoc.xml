@@ -1,0 +1,7 @@
+<!-- phpdoc.xml -->
+<phpdocumentor>
+    <project name="Control de salas" defaultpackagename="default">
+        <directory>src</directory>
+        <output>docs</output>
+    </project>
+</phpdocumentor>
