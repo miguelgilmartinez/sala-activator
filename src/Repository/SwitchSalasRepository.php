@@ -7,7 +7,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
  * @extends ServiceEntityRepository<SwitchSalas>
+ *
  */
 class SwitchSalasRepository extends ServiceEntityRepository {
 
@@ -25,6 +27,10 @@ class SwitchSalasRepository extends ServiceEntityRepository {
         return $result->fetchAllAssociative();
     }
 
+    /**
+     * Devuelve todos los registros ordenados por Id, ASC
+     * @return array
+     */
     public function findAllSortedById(): array {
         $salas = $this->findAll();
         usort($salas, function ($a, $b) {

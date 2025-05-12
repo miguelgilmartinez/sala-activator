@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ */
 class RegistrationController extends AbstractController {
 
     #[Route('/register2', name: 'app_register2')]
@@ -35,7 +38,8 @@ class RegistrationController extends AbstractController {
             return $this->render('registration/register.html.twig', [
                         'registrationForm' => $form->createView(),
             ]);
-        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+        }
+        catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
             $this->addFlash("danger", "Usuario ya existe");
             return $this->redirectToRoute('app_register');
             //     return  new Response(); //$this->json(['error' => 'El usuario ya existe en el sistema'],

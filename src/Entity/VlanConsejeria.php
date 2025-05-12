@@ -5,6 +5,12 @@ namespace App\Entity;
 use App\Repository\VlanConsejeriaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ *
+ *
+ * Entidad de mapeo de ID de vlan y su Consejería-Servicio en la vista web
+ */
 #[ORM\Entity(repositoryClass: VlanConsejeriaRepository::class)]
 #[ORM\UniqueConstraint(name: 'unique_vlan_consejeria', columns: ['vlanid', 'consejeria'])]
 class VlanConsejeria {

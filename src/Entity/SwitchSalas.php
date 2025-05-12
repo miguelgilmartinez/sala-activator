@@ -5,6 +5,11 @@ namespace App\Entity;
 use App\Repository\SwitchSalasRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ *
+ * Configuración de salas - IP del switch - Puertos ethernet asignados en el switch
+ */
 #[ORM\Entity(repositoryClass: SwitchSalasRepository::class)]
 class SwitchSalas {
 

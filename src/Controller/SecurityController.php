@@ -7,6 +7,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ *
+ * Frontal de autenticación.
+ */
 class SecurityController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]

@@ -12,6 +12,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ * Comando de creación de administradores. Usado para inicializar el sistema con el primer usuario
+ *
+ * bin/console app:create-admin <email> <password> <nombre> <apellidos>
+ */
 #[AsCommand(
     name: 'app:create-admin',
     description: 'Crea un nuevo usuario administrador',

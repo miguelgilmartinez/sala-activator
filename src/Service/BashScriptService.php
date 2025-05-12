@@ -8,6 +8,12 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use App\Repository\SwitchSalasRepository;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ *
+ * Lanzador de scripts Bash que a su vez lanzan comandos SNMPget y SNMPwalk para
+ * administrar el sistema
+ */
 class BashScriptService {
 
     private string $fijarEstadoSala;
@@ -21,7 +27,8 @@ class BashScriptService {
     }
 
     /**
-     * Ejecuta el script bash para activar/desactivar una sala
+     * Ejecuta el script bash para asignar vlan a una sala
+     * @return array
      */
     public function toggleSala(array $dataJson): array {
         $this->l->info(json_encode($dataJson));
@@ -48,7 +55,7 @@ class BashScriptService {
 
     /**
      * @return array vlan y primer puerto encontrado
-     * @throws ProcessFailedException
+     * @throws ProcessFailedException Exception
      */
     public function getVlansStatus(string $switchIP): string {
         // Ejecuta el script leer_estado_salas pasando la IP del switch

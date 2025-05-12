@@ -11,6 +11,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\SwitchSalasRepository;
 use App\Repository\VlanConsejeriaRepository;
 
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ *
+ * Página principal del sistema.
+ */
 class SalaController extends AbstractController {
 
     private BashScriptService $bashScriptService;
@@ -41,7 +46,8 @@ class SalaController extends AbstractController {
         try {
             $result = $this->bashScriptService->toggleSala($data);
             return new JsonResponse($result);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()],
                     Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -51,7 +57,8 @@ class SalaController extends AbstractController {
     public function getSalasStatus(): JsonResponse {
         try {
             return new JsonResponse($this->getVlansSalas());
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()],
                     Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -86,8 +93,6 @@ class SalaController extends AbstractController {
         }
         return $salaVlan; // [1 => 20, 2 => 30, 3 => 50, 4 => 30, 5 => 20, 6 => 50];
     }
-
- 
 
     private function getVlanConsejerias(): array {
         return array_map(function (\App\Entity\VlanConsejeria $item) {

@@ -14,6 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\RegistrationFormType;
 
+/**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
+ *
+ * Gestor de usuarios
+ */
 #[Route('/admin/user')]
 #[IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController {
@@ -47,7 +52,8 @@ class UserController extends AbstractController {
             return $this->render('registration/register.html.twig', [
                         'registrationForm' => $form->createView(),
             ]);
-        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+        }
+        catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
             $this->addFlash("danger", "Usuario ya existe");
             return $this->redirectToRoute('app_register');
             //     return  new Response(); //$this->json(['error' => 'El usuario ya existe en el sistema'],

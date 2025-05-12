@@ -523,7 +523,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Repository\\SwitchSalasRepository\u003A\u003AfindAllSortedById\u0028\u0029",
             "name": "findAllSortedById",
-            "summary": "",
+            "summary": "Devuelve\u0020todos\u0020los\u0020registros\u0020ordenados\u0020por\u0020Id,\u0020ASC",
             "url": "classes/App-Repository-SwitchSalasRepository.html#method_findAllSortedById"
         },                {
             "fqsen": "\\App\\Repository\\UserRepository",
@@ -563,7 +563,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Repository\\VlanConsejeriaRepository\u003A\u003AgetVlansDisponibles\u0028\u0029",
             "name": "getVlansDisponibles",
-            "summary": "",
+            "summary": "Devuelve\u0020todos\u0020los\u0020vlanid,\u0020en\u0020un\u0020array\u0020num\u00E9rico\u0022",
             "url": "classes/App-Repository-VlanConsejeriaRepository.html#method_getVlansDisponibles"
         },                {
             "fqsen": "\\App\\Security\\LoginFormAuthenticator",
@@ -618,7 +618,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Service\\BashScriptService\u003A\u003AtoggleSala\u0028\u0029",
             "name": "toggleSala",
-            "summary": "Ejecuta\u0020el\u0020script\u0020bash\u0020para\u0020activar\/desactivar\u0020una\u0020sala",
+            "summary": "Ejecuta\u0020el\u0020script\u0020bash\u0020para\u0020asignar\u0020vlan\u0020a\u0020una\u0020sala",
             "url": "classes/App-Service-BashScriptService.html#method_toggleSala"
         },                {
             "fqsen": "\\App\\Service\\BashScriptService\u003A\u003AgetVlansStatus\u0028\u0029",

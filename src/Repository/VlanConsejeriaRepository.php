@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @author Miguel Gil Martínez <miguel.gil.martinez@juntadeandalucia.es>
  * @extends ServiceEntityRepository<VlanConsejeria>
  */
 class VlanConsejeriaRepository extends ServiceEntityRepository {
@@ -15,6 +16,10 @@ class VlanConsejeriaRepository extends ServiceEntityRepository {
         parent::__construct($registry, VlanConsejeria::class);
     }
 
+    /**
+     * Devuelve todos los vlanid, en un array numérico"
+     * @return array
+     */
     public function getVlansDisponibles(): array {
         return $this->getEntityManager()->getConnection
                         ()->executeQuery("SELECT vlanid FROM vlan_consejeria")
