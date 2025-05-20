@@ -17,10 +17,10 @@ class SwitchSalasType extends AbstractType
                 'label' => 'Nombre de la sala o ubicación',
             ])
             ->add('ip', TextType::class, [
-                'label' => 'Dirección IP',
+                'label' => 'Dirección IP del switch',
             ])
             ->add('puertos', TextType::class, [
-                'label' => 'Puertos asignados',
+                'label' => 'Puertos Ethenet asignados',
                 'required' => false,
                 'attr' => ['placeholder' => 'Ejemplo: 1-4,7,9']
             ])

@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Configurar actualización periódica (cada minuto)
     setInterval(updateSalasStatus, 60000);
+    updateSalasStatus();
     // Actualizar estados al cargar la página
-    addLogMessage('Inicializando control de salas');
-    setTimeout(updateSalasStatus, 1000);
+    addLogMessage('Inicializando control de salas. Espere un minuto');
+    // Desactivado para evitar que tarde demasiado en carga inicial:  setTimeout(updateSalasStatus, 1000);
 });

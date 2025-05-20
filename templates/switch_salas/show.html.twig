@@ -4,13 +4,13 @@
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Detalles del Switch</h1>
+    <h1>Detalles de la sala</h1>
 
     <table class="table table-bordered">
         <tr><th>ID</th><td>{{ switch.id }}</td></tr>
         <tr><th>Nombre</th><td>{{ switch.nombre }}</td></tr>
-        <tr><th>IP</th><td>{{ switch.ip }}</td></tr>
-        <tr><th>Puertos</th><td>{{ switch.puertos }}</td></tr>
+        <tr><th>IP del switch asignado</th><td>{{ switch.ip }}</td></tr>
+        <tr><th>Puertos Ethernet</th><td>{{ switch.puertos }}</td></tr>
     </table>
 
     <a href="{{ path('app_switch_salas_index') }}" class="btn btn-secondary">Volver</a>

@@ -13,17 +13,16 @@
         {% endfor %}
     {% endfor %}
 
-    <h1>Gestión de Switches</h1>
-
-    <a href="{{ path('app_switch_salas_new') }}" class="btn btn-primary mb-3 offset-10">Nuevo switch</a>
+    <h1>Gestión de Salas</h1>
+    <a href="{{ path('app_switch_salas_new') }}" class="btn btn-primary mb-3 offset-10">Nueva sala</a>
 
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
-                <th>IP</th>
-                <th>Puertos</th>
+                <th>IP del switch asignado</th>
+                <th>Puertos Ethernet</th>
                 <th>Acciones</th>
             </tr>
         </thead>
